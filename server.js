@@ -20,30 +20,24 @@ app.use(function(req, res, next) {
 });
 
 app.get(api + '/inventory/distributors/', function (req, res, next) {
-    connection.connect();
     connection.query('SELECT * FROM distributors;', function(err, rows) {
         if (err) throw err;
         else res.json(rows);
     });
-    connection.end();
 });
 
 app.get(api + '/inventory/manufacturers/', function (req, res, next) {
-    connection.connect();
     connection.query('SELECT * FROM manufacturers;', function(err, rows) {
         if (err) throw err;
         else res.json(rows);
     });
-    connection.end();
 });
 
 app.get(api + '/users/', function (req, res) {
-    connection.connect();
     connection.query('SELECT * FROM users AS Users;', function(err, rows) {
         if (err) throw err;
         else res.json(rows);
     });
-    connection.end();
 });
 
 app.post(api + '/users/', function (req, res) {
