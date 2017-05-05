@@ -42,4 +42,11 @@ router.delete('/inventory/distributors/:id', function (req, res) {
     });
 });
 
+router.get('/inventory/distributors/search/:text', function (req, res) {
+    cn.query("SELECT * FROM distributors WHERE Name LIKE '%"+ req.params.text +"%';", function(err, rows) {
+        if (err) throw err;
+        else res.json(rows);
+    });
+});
+
 module.exports = router;
