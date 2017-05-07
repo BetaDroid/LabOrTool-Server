@@ -6,7 +6,13 @@ const router = require('../../configuration/router');
 const cn = require('../../configuration/db');
 
 router.get('/inventory/components/', function (req, res) {
-    cn.query('SELECT * FROM components;', function(err, rows) {
+    cn.query('SELECT `components`.`Id`, `components`.`Name`, `manufacturers`.`Name` AS `Manufacturer`, ' +
+        '`components`.`PartNumber`, `components`.`DistributorCode`,`components`.`Price`, `components`.`Datasheet`, ' +
+        '`footprints`.`Name` AS `Footprint`, `footprints`.`Link` AS `FootprintLink`, `categories`.`Name` AS `Category` ' +
+        'FROM `components` ' +
+        'INNER JOIN `manufacturers` ON `manufacturers`.`Id` = `components`.`ManufacturerId` ' +
+        'INNER JOIN `footprints` ON `footprints`.`Id` = `components`.`FootprintId`' +
+        'INNER JOIN `categories` ON `categories`.`Id` = `components`.`CategoryId`;', function(err, rows) {
         if (err) throw err;
         else res.json(rows);
     });
