@@ -6,7 +6,10 @@ const router = require('../../configuration/router');
 const cn = require('../../configuration/db');
 
 router.get('/inventory/categories-param-types/', function (req, res) {
-    cn.query('SELECT * FROM categoriesparamtypes;', function(err, rows) {
+    cn.query('SELECT `categoriesparamtypes`.`Name`, `categories`.`Name` AS `CategoryName`, `units`.`Name` AS `UnitName`' +
+        ', `categoriesparamtypes`.`Order`  FROM `categoriesparamtypes` ' +
+        'INNER JOIN `categories` ON `categories`.`Id` = `categoriesparamtypes`.`CategoryId` ' +
+        'INNER JOIN `units` ON `units`.`Id` = `categoriesparamtypes`.`UnitId`;', function(err, rows) {
         if (err) throw err;
         else res.json(rows);
     });
@@ -45,8 +48,8 @@ router.delete('/inventory/categories-param-types/:id', function (req, res) {
 });
 
 router.get('/inventory/categories-param-types/search/:text', function (req, res) {
-    cn.query("SELECT `categoriesparamtypes`.`Name`, `categories`.`Name`, `units`.`Name`, `categoriesparamtypes`.`Order` " +
-        "FROM `categoriesparamtypes` " +
+    cn.query("SELECT `categoriesparamtypes`.`Name`, `categories`.`Name` AS `CategoryName`, `units`.`Name` AS `UnitName`" +
+        ", `categoriesparamtypes`.`Order` FROM `categoriesparamtypes` " +
         "INNER JOIN `categories` ON `categories`.`Id` = `categoriesparamtypes`.`CategoryId` " +
         "INNER JOIN `units` ON `units`.`Id` = `categoriesparamtypes`.`UnitId`" +
         "WHERE `categoriesparamtypes`.`Name` LIKE '%" + req.params.text + "%' OR " +
