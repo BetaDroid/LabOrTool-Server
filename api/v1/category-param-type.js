@@ -16,7 +16,7 @@ router.get('/inventory/categories-param-types/', function (req, res) {
 });
 
 router.post('/inventory/categories-param-types/', function (req, res) {
-    cn.query("INSERT INTO categoriesparamtypes (Name, CategoryId, UnitId, Order, Note) " +
+    cn.query("INSERT INTO `categoriesparamtypes` (`Name`, `CategoryId`, `UnitId`, `Order`, `Note`) " +
         "VALUES ('" + req.body.Name + "', " + req.body.CategoryId + ", " + req.body.UnitId + ", " +
         "'" + req.body.Order + "', '" + req.body.Note + "');", function(err, rows) {
         if (err) throw err;
@@ -25,23 +25,23 @@ router.post('/inventory/categories-param-types/', function (req, res) {
 });
 
 router.get('/inventory/categories-param-types/:id', function (req, res) {
-    cn.query("SELECT * FROM categoriesparamtypes WHERE Id = "+ req.params.id +";", function(err, rows) {
+    cn.query("SELECT * FROM `categoriesparamtypes` WHERE `Id` = "+ req.params.id +";", function(err, rows) {
         if (err) throw err;
         else res.json(rows[0]);
     });
 });
 
 router.put('/inventory/categories-param-types/:id', function (req, res) {
-    cn.query("UPDATE categoriesparamtypes SET Name = '" + req.body.Name + "', CategoryId = " + req.body.CategoryId +
-        ", UnitId = " + req.body.UnitId + ", Order = '" + req.body.Order + "', Note = '" + req.body.Note + "' " +
-        "WHERE Id = " + req.params.id + ";", function(err, rows) {
+    cn.query("UPDATE `categoriesparamtypes` SET `Name` = '" + req.body.Name + "', `CategoryId` = " + req.body.CategoryId +
+        ", `UnitId` = " + req.body.UnitId + ", `Order` = '" + req.body.Order + "', `Note` = '" + req.body.Note + "' " +
+        "WHERE `Id` = " + req.params.id + ";", function(err, rows) {
         if (err) throw err;
         else res.json(true);
     });
 });
 
 router.delete('/inventory/categories-param-types/:id', function (req, res) {
-    cn.query("DELETE FROM categoriesparamtypes WHERE Id = " + req.params.id + ";", function(err, rows) {
+    cn.query("DELETE FROM `categoriesparamtypes` WHERE `Id` = " + req.params.id + ";", function(err, rows) {
         if (err) throw err;
         else res.json(true);
     });
