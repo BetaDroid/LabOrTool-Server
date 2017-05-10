@@ -13,6 +13,7 @@ const prefix = require('./api/v1/prefix');
 const unit = require('./api/v1/unit');
 const component = require('./api/v1/component');
 const cpt = require('./api/v1/category-param-type');
+const cp = require('./api/v1/component-param');
 
 api.use(distributor);
 api.use(manufacturer);
@@ -23,6 +24,7 @@ api.use(prefix);
 api.use(unit);
 api.use(component);
 api.use(cpt);
+api.use(cp);
 
 const server = api.listen(8081, function () {
     const port = server.address().port;
