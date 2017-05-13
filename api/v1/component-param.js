@@ -18,12 +18,9 @@ router.get('/inventory/component-params/:id', function (req, res) {
 });
 
 router.post('/inventory/component-params/', function (req, res) {
-    cn.query("INSERT INTO components (Name, ManufacturerId, PartNumber, DistributorId, DistributorCode, Price, Code, " +
-        "LocationId, Datasheet, FootprintId, CategoryId, Note) VALUES ('" + req.body.Name + "', " +
-        req.body.ManufacturerId + ", '" + req.body.PartNumber + "', " + req.body.DistributorId + ", " +
-        "'" + req.body.DistributorCode + "', " + req.body.Price + ", '" + req.body.Code +"', " + req.body.LocationId +
-        ", '" + req.body.Datasheet + "', " + req.body.FootprintId + ", " + req.body.CategoryId + ", '" + req.body.Note +
-        "');", function(err, rows) {
+    cn.query("INSERT INTO `componentparams` (`ComponentId`, `CategoryParamTypeId`, `Value`, `PrefixId`, `Note`) " +
+            "VALUES (" + req.body.Component + ", " + req.body.CPT + ", " + req.body.Value + ", " + req.body.Prefix +
+            ", '" + req.body.Note + "');", function(err, rows) {
         if (err) throw err;
         else res.json(true);
     });
