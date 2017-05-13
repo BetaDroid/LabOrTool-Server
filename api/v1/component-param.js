@@ -17,7 +17,15 @@ router.get('/inventory/component-params/:id', function (req, res) {
     });
 });
 
-router.post('/inventory/component-params/', function (req, res) {
+router.get('/inventory/component-param/:id', function (req, res) {
+    cn.query("SELECT * FROM `componentparams` WHERE `Id` = " + req.params.id + ";", function(err, rows) {
+        if (err) throw err;
+        else res.json(rows[0]);
+    });
+});
+
+
+router.post('/inventory/component-param/', function (req, res) {
     cn.query("INSERT INTO `componentparams` (`ComponentId`, `CategoryParamTypeId`, `Value`, `PrefixId`, `Note`) " +
             "VALUES (" + req.body.Component + ", " + req.body.CPT + ", " + req.body.Value + ", " + req.body.Prefix +
             ", '" + req.body.Note + "');", function(err, rows) {
@@ -26,8 +34,17 @@ router.post('/inventory/component-params/', function (req, res) {
     });
 });
 
-router.delete('/inventory/component-params/:id', function (req, res) {
-    cn.query("DELETE FROM components WHERE Id = " + req.params.id + ";", function(err, rows) {
+router.put('/inventory/component-param/:id', function (req, res) {
+    cn.query("UPDATE `componentparams` SET `ComponentId` = " + req.body.ComponentId + ", `CategoryParamTypeId` = " +
+             req.body.CategoryParamTypeId + ", `Value` = " + req.body.Value + ", `PrefixId` = " +
+             req.body.PrefixId + ", `Note` = '" + req.body.Note + "' WHERE `Id` = " + req.params.id + ";", function(err, rows) {
+        if (err) throw err;
+        else res.json(true);
+    });
+});
+
+router.delete('/inventory/component-param/:id', function (req, res) {
+    cn.query("DELETE FROM `componentparams` WHERE Id = " + req.params.id + ";", function(err, rows) {
         if (err) throw err;
         else res.json(true);
     });
