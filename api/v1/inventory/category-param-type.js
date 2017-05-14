@@ -2,8 +2,8 @@
  * Created by Daniel on 07/05/17.
  */
 
-const router = require('../../configuration/router');
-const cn = require('../../configuration/db');
+const router = require('../../../configuration/router');
+const cn = require('../../../configuration/db');
 
 router.get('/inventory/categories-param-types/', function (req, res) {
     cn.query('SELECT `categoriesparamtypes`.`Id`, `categoriesparamtypes`.`Name`, `categories`.`Name` AS `CategoryName`,' +

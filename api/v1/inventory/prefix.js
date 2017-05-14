@@ -2,8 +2,8 @@
  * Created by Daniel on 06/05/17.
  */
 
-const router = require('../../configuration/router');
-const cn = require('../../configuration/db');
+const router = require('../../../configuration/router');
+const cn = require('../../../configuration/db');
 
 router.get('/inventory/prefixes/', function (req, res) {
     cn.query('SELECT * FROM prefixes;', function(err, rows) {

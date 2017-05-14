@@ -2,8 +2,15 @@
  * Created by Daniel on 05/05/17.
  */
 
-const router = require('../../configuration/router');
-const cn = require('../../configuration/db');
+const router = require('../../../configuration/router');
+const cn = require('../../../configuration/db');
+
+router.get('/inventory/distributors/count/', function (req, res) {
+    cn.query('SELECT COUNT(`Id`) as `nDis` FROM `distributors`;', function(err, rows) {
+        if (err) throw err;
+        else res.json(rows[0]);
+    });
+});
 
 router.get('/inventory/distributors/', function (req, res) {
     cn.query('SELECT * FROM distributors;', function(err, rows) {

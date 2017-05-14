@@ -2,8 +2,8 @@
  * Created by Daniel on 10/05/17.
  */
 
-const router = require('../../configuration/router');
-const cn = require('../../configuration/db');
+const router = require('../../../configuration/router');
+const cn = require('../../../configuration/db');
 
 router.get('/inventory/component-params/:id', function (req, res) {
     cn.query("SELECT `componentparams`.`Id`, `componentparams`.`ComponentId`, `categoriesparamtypes`.`Name` AS `CPT`, " +

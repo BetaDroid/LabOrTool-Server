@@ -2,8 +2,15 @@
  * Created by Daniel on 06/05/17.
  */
 
-const router = require('../../configuration/router');
-const cn = require('../../configuration/db');
+const router = require('../../../configuration/router');
+const cn = require('../../../configuration/db');
+
+router.get('/inventory/locations/count/', function (req, res) {
+    cn.query('SELECT COUNT(`Id`) as `nLoc` FROM `locations`;', function(err, rows) {
+        if (err) throw err;
+        else res.json(rows[0]);
+    });
+});
 
 router.get('/inventory/locations/', function (req, res) {
     cn.query('SELECT * FROM locations;', function(err, rows) {
