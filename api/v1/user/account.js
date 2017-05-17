@@ -3,14 +3,11 @@
  */
 
 const router = require('../../../configuration/router');
-const cn = require('../../../configuration/db');
+const Account = require('../../models/user/account');
 
 router.get('/user/accounts/', function (req, res) {
-    cn.query("SELECT `accounts`.`Id`, `accounts`.`Username`, `roles`.`Name` AS `Role`, "+
-        "CASE WHEN `accounts`.`Status`=0 THEN 'Inactive' ELSE 'Active' END AS `Status`, `accounts`.`EmployeeId`"+
-        "FROM `accounts` INNER JOIN `roles` ON `roles`.`Id`=`accounts`.`RoleId`;", function(err, rows) {
-        if (err) throw err;
-        else res.json(rows);
+    Account.getAll(function(data) {
+        res.json(data);
     });
 });
 

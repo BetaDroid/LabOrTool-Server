@@ -3,7 +3,21 @@ var express = require('express');
 var app = express();
 */
 
-const api = require('./configuration/config');
+'use strict';
+
+const express = require('express');
+const bodyParser = require('body-parser');
+const api = express();
+api.use(express.static('dist')); // angular 4 client position
+api.use(bodyParser.urlencoded({ extended: true }));
+api.use(bodyParser.json());
+api.use(function (req, res, next) {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
+    next();
+});
+
 const distributor = require('./api/v1/inventory/distributor');
 const manufacturer = require('./api/v1/inventory/manufacturer');
 const location = require('./api/v1/inventory/location');
@@ -40,9 +54,10 @@ api.use(role);
 
 api.use(activity);
 
-const server = api.listen(8081, function () {
-    const port = server.address().port;
-    console.log("Running on port: " + port);
+api.get('*', function(req, res){
+    res.redirect('/');
 });
+
+api.listen(8081, '127.0.0.1', function () { });
 
 

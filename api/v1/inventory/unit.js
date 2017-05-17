@@ -3,52 +3,34 @@
  */
 
 const router = require('../../../configuration/router');
-const cn = require('../../../configuration/db');
+const Api = require('../../../configuration/api');
+const Unit = require('../../models/inventory/unit');
 
-router.get('/inventory/units/', function (req, res) {
-    cn.query('SELECT * FROM units;', function(err, rows) {
-        if (err) throw err;
-        else res.json(rows);
+router.get(Api.version+'/inventory/units/', function (req, res) {
+    Unit.getAll(function(data) {
+        res.json(data);
     });
 });
 
-router.post('/inventory/units/', function (req, res) {
-    cn.query("INSERT INTO units (Name, ShortName, Note) " +
-        "VALUES ('" + req.body.Name + "', '" + req.body.ShortName + "', '" + req.body.Note + "');",
-        function(err, rows) {
-        if (err) throw err;
-        else res.json(true);
+router.post(Api.version+'/inventory/units/', function (req, res) {
+    Unit.insert(req.body);
+    res.json({});
+});
+
+router.get(Api.version+'/inventory/units/:id', function (req, res) {
+    Unit.getById(req.params.id, function(data) {
+        res.json(data);
     });
 });
 
-router.get('/inventory/units/:id', function (req, res) {
-    cn.query("SELECT * FROM units WHERE Id = "+ req.params.id +";", function(err, rows) {
-        if (err) throw err;
-        else res.json(rows[0]);
-    });
+router.put(Api.version+'/inventory/units/:id', function (req, res) {
+    Unit.update(req.params.id, req.body);
+    res.json({});
 });
 
-router.put('/inventory/units/:id', function (req, res) {
-    cn.query("UPDATE units SET Name = '" + req.body.Name + "', ShortName = '" + req.body.ShortName + "', " +
-        "Note = '" + req.body.Note + "' WHERE Id = " + req.params.id + ";", function(err, rows) {
-        if (err) throw err;
-        else res.json(true);
-    });
-});
-
-router.delete('/inventory/units/:id', function (req, res) {
-    cn.query("DELETE FROM units WHERE Id = " + req.params.id + ";", function(err, rows) {
-        if (err) throw err;
-        else res.json(true);
-    });
-});
-
-router.get('/inventory/units/search/:text', function (req, res) {
-    cn.query("SELECT * FROM units WHERE Name LIKE '%"+ req.params.text +"%' OR " +
-        "ShortName LIKE '%"+ req.params.text +"%';", function(err, rows) {
-        if (err) throw err;
-        else res.json(rows);
-    });
+router.delete(Api.version+'/inventory/units/:id', function (req, res) {
+    Unit.delete(req.params.id);
+    res.json({});
 });
 
 module.exports = router;

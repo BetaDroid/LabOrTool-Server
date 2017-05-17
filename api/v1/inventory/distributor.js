@@ -3,56 +3,45 @@
  */
 
 const router = require('../../../configuration/router');
-const cn = require('../../../configuration/db');
+const Api = require('../../../configuration/api');
+const Distributor = require('../../models/inventory/distributor');
 
-router.get('/inventory/distributors/count/', function (req, res) {
-    cn.query('SELECT COUNT(`Id`) as `nDis` FROM `distributors`;', function(err, rows) {
-        if (err) throw err;
-        else res.json(rows[0]);
+router.get(Api.version+'/inventory/distributors/count/', function (req, res) {
+    Distributor.count(function(data) {
+        res.json(data);
     });
 });
 
-router.get('/inventory/distributors/', function (req, res) {
-    cn.query('SELECT * FROM distributors;', function(err, rows) {
-        if (err) throw err;
-        else res.json(rows);
+router.get(Api.version+'/inventory/distributors/', function (req, res) {
+    Distributor.getAll(function(data) {
+        res.json(data);
     });
 });
 
-router.post('/inventory/distributors/', function (req, res) {
-    cn.query("INSERT INTO distributors (Name, Website) " +
-        "VALUES ('" + req.body.Name + "', '" + req.body.Website + "');", function(err, rows) {
-        if (err) throw err;
-        else res.json(true);
+router.post(Api.version+'/inventory/distributors/', function (req, res) {
+    Distributor.insert(req.body);
+    res.json({});
+});
+
+router.get(Api.version+'/inventory/distributors/:id', function (req, res) {
+    Distributor.getById(req.params.id, function(data) {
+        res.json(data);
     });
 });
 
-router.get('/inventory/distributors/:id', function (req, res) {
-    cn.query("SELECT * FROM distributors WHERE Id = "+ req.params.id +";", function(err, rows) {
-        if (err) throw err;
-        else res.json(rows[0]);
-    });
+router.put(Api.version+'/inventory/distributors/:id', function (req, res) {
+    Distributor.update(req.params.id, req.body);
+    res.json({});
 });
 
-router.put('/inventory/distributors/:id', function (req, res) {
-    cn.query("UPDATE distributors SET Name = '" + req.body.Name + "', Website = '" + req.body.Website + "' " +
-        "WHERE Id = " + req.params.id + ";", function(err, rows) {
-        if (err) throw err;
-        else res.json(true);
-    });
+router.delete(Api.version+'/inventory/distributors/:id', function (req, res) {
+    Distributor.delete(req.params.id);
+    res.json({});
 });
 
-router.delete('/inventory/distributors/:id', function (req, res) {
-    cn.query("DELETE FROM distributors WHERE Id = " + req.params.id + ";", function(err, rows) {
-        if (err) throw err;
-        else res.json(true);
-    });
-});
-
-router.get('/inventory/distributors/search/:text', function (req, res) {
-    cn.query("SELECT * FROM distributors WHERE Name LIKE '%"+ req.params.text +"%';", function(err, rows) {
-        if (err) throw err;
-        else res.json(rows);
+router.get(Api.version+'/inventory/distributors/search/:text', function (req, res) {
+    Distributor.search(req.params.text, function(data) {
+        res.json(data);
     });
 });
 

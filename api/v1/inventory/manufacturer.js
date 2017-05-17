@@ -3,56 +3,45 @@
  */
 
 const router = require('../../../configuration/router');
-const cn = require('../../../configuration/db');
+const Api = require('../../../configuration/api');
+const Manufacturer = require('../../models/inventory/manufacturer');
 
-router.get('/inventory/manufacturers/count/', function (req, res) {
-    cn.query('SELECT COUNT(`Id`) as `nMan` FROM `manufacturers`;', function(err, rows) {
-        if (err) throw err;
-        else res.json(rows[0]);
+router.get(Api.version+'/inventory/manufacturers/count/', function (req, res) {
+    Manufacturer.count(function(data) {
+        res.json(data);
     });
 });
 
-router.get('/inventory/manufacturers/', function (req, res) {
-    cn.query('SELECT * FROM manufacturers;', function(err, rows) {
-        if (err) throw err;
-        else res.json(rows);
+router.get(Api.version+'/inventory/manufacturers/', function (req, res) {
+    Manufacturer.getAll(function(data) {
+        res.json(data);
     });
 });
 
-router.post('/inventory/manufacturers/', function (req, res) {
-    cn.query("INSERT INTO manufacturers (Name, Website) " +
-        "VALUES ('" + req.body.Name + "', '" + req.body.Website + "');", function(err, rows) {
-        if (err) throw err;
-        else res.json(true);
+router.post(Api.version+'/inventory/manufacturers/', function (req, res) {
+    Manufacturer.insert(req.body);
+    res.json({});
+});
+
+router.get(Api.version+'/inventory/manufacturers/:id', function (req, res) {
+    Manufacturer.getById(req.params.id, function(data) {
+        res.json(data);
     });
 });
 
-router.get('/inventory/manufacturers/:id', function (req, res) {
-    cn.query("SELECT * FROM manufacturers WHERE Id = "+ req.params.id +";", function(err, rows) {
-        if (err) throw err;
-        else res.json(rows[0]);
-    });
+router.put(Api.version+'/inventory/manufacturers/:id', function (req, res) {
+    Manufacturer.update(req.params.id, req.body);
+    res.json({});
 });
 
-router.put('/inventory/manufacturers/:id', function (req, res) {
-    cn.query("UPDATE manufacturers SET Name = '" + req.body.Name + "', Website = '" + req.body.Website + "' " +
-        "WHERE Id = " + req.params.id + ";", function(err, rows) {
-        if (err) throw err;
-        else res.json(true);
-    });
+router.delete(Api.version+'/inventory/manufacturers/:id', function (req, res) {
+    Manufacturer.delete(req.params.id);
+    res.json({});
 });
 
-router.delete('/inventory/manufacturers/:id', function (req, res) {
-    cn.query("DELETE FROM manufacturers WHERE Id = " + req.params.id + ";", function(err, rows) {
-        if (err) throw err;
-        else res.json(true);
-    });
-});
-
-router.get('/inventory/manufacturers/search/:text', function (req, res) {
-    cn.query("SELECT * FROM manufacturers WHERE Name LIKE '%"+ req.params.text +"%';", function(err, rows) {
-        if (err) throw err;
-        else res.json(rows);
+router.get(Api.version+'/inventory/manufacturers/search/:text', function (req, res) {
+    Manufacturer.search(req.params.text, function(data) {
+        res.json(data);
     });
 });
 

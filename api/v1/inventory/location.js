@@ -3,58 +3,45 @@
  */
 
 const router = require('../../../configuration/router');
-const cn = require('../../../configuration/db');
+const Api = require('../../../configuration/api');
+const Location = require('../../models/inventory/location');
 
-router.get('/inventory/locations/count/', function (req, res) {
-    cn.query('SELECT COUNT(`Id`) as `nLoc` FROM `locations`;', function(err, rows) {
-        if (err) throw err;
-        else res.json(rows[0]);
+router.get(Api.version+'/inventory/locations/count/', function (req, res) {
+    Location.count(function(data) {
+        res.json(data);
     });
 });
 
-router.get('/inventory/locations/', function (req, res) {
-    cn.query('SELECT * FROM locations;', function(err, rows) {
-        if (err) throw err;
-        else res.json(rows);
+router.get(Api.version+'/inventory/locations/', function (req, res) {
+    Location.getAll(function(data) {
+        res.json(data);
     });
 });
 
-router.post('/inventory/locations/', function (req, res) {
-    cn.query("INSERT INTO locations (Position, Container, SubContainer) " +
-        "VALUES ('" + req.body.Position + "', '" + req.body.Container + "', '" + req.body.SubContainer + "');",
-        function(err, rows) {
-            if (err) throw err;
-            else res.json(true);
+router.post(Api.version+'/inventory/locations/', function (req, res) {
+    Location.insert(req.body);
+    res.json({});
+});
+
+router.get(Api.version+'/inventory/locations/:id', function (req, res) {
+    Location.getById(req.params.id, function(data) {
+        res.json(data);
     });
 });
 
-router.get('/inventory/locations/:id', function (req, res) {
-    cn.query("SELECT * FROM locations WHERE Id = "+ req.params.id +";", function(err, rows) {
-        if (err) throw err;
-        else res.json(rows[0]);
-    });
+router.put(Api.version+'/inventory/locations/:id', function (req, res) {
+    Location.update(req.params.id, req.body);
+    res.json({});
 });
 
-router.put('/inventory/locations/:id', function (req, res) {
-    cn.query("UPDATE locations SET Position = '" + req.body.Position + "', Container = '" + req.body.Container + "', " +
-        "SubContainer = " + req.body.SubContainer + " WHERE Id = " + req.params.id + ";", function(err, rows) {
-        if (err) throw err;
-        else res.json(true);
-    });
+router.delete(Api.version+'/inventory/locations/:id', function (req, res) {
+    Location.delete(req.params.id);
+    res.json({});
 });
 
-router.delete('/inventory/locations/:id', function (req, res) {
-    cn.query("DELETE FROM locations WHERE Id = " + req.params.id + ";", function(err, rows) {
-        if (err) throw err;
-        else res.json(true);
-    });
-});
-
-router.get('/inventory/locations/search/:text', function (req, res) {
-    cn.query("SELECT * FROM locations WHERE Position LIKE '%"+ req.params.text +"%' OR " +
-        "Container LIKE '%"+ req.params.text +"%' OR SubContainer LIKE '%"+ req.params.text +"%';", function(err, rows) {
-        if (err) throw err;
-        else res.json(rows);
+router.get(Api.version+'/inventory/locations/search/:text', function (req, res) {
+    Location.search(req.params.text, function(data) {
+        res.json(data);
     });
 });
 

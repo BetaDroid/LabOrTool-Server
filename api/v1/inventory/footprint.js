@@ -3,49 +3,39 @@
  */
 
 const router = require('../../../configuration/router');
-const cn = require('../../../configuration/db');
+const Api = require('../../../configuration/api');
+const Footprint = require('../../models/inventory/footprint');
 
-router.get('/inventory/footprints/', function (req, res) {
-    cn.query('SELECT * FROM footprints;', function(err, rows) {
-        if (err) throw err;
-        else res.json(rows);
+router.get(Api.version+'/inventory/footprints/', function (req, res) {
+    Footprint.getAll(function(data) {
+        res.json(data);
     });
 });
 
-router.post('/inventory/footprints/', function (req, res) {
-    cn.query("INSERT INTO footprints (Name, Link) " +
-        "VALUES ('" + req.body.Name + "', '" + req.body.Link + "');", function(err, rows) {
-        if (err) throw err;
-        else res.json(true);
+router.post(Api.version+'/inventory/footprints/', function (req, res) {
+    Footprint.insert(req.body);
+    res.json({});
+});
+
+router.get(Api.version+'/inventory/footprints/:id', function (req, res) {
+    Footprint.getById(req.params.id, function(data) {
+        res.json(data);
     });
 });
 
-router.get('/inventory/footprints/:id', function (req, res) {
-    cn.query("SELECT * FROM footprints WHERE Id = "+ req.params.id +";", function(err, rows) {
-        if (err) throw err;
-        else res.json(rows[0]);
-    });
+router.put(Api.version+'/inventory/footprints/:id', function (req, res) {
+    Footprint.update(req.params.id, req.body);
+    res.json({});
 });
 
-router.put('/inventory/footprints/:id', function (req, res) {
-    cn.query("UPDATE footprints SET Name = '" + req.body.Name + "', Link = '" + req.body.Link + "' " +
-        "WHERE Id = " + req.params.id + ";", function(err, rows) {
-        if (err) throw err;
-        else res.json(true);
-    });
+router.delete(Api.version+'/inventory/footprints/:id', function (req, res) {
+    Footprint.delete(req.params.id);
+    res.json({});
 });
 
-router.delete('/inventory/footprints/:id', function (req, res) {
-    cn.query("DELETE FROM footprints WHERE Id = " + req.params.id + ";", function(err, rows) {
-        if (err) throw err;
-        else res.json(true);
-    });
-});
-
-router.get('/inventory/footprints/search/:text', function (req, res) {
-    cn.query("SELECT * FROM footprints WHERE Name LIKE '%"+ req.params.text +"%';", function(err, rows) {
-        if (err) throw err;
-        else res.json(rows);
+router.get(Api.version+'/inventory/footprints/search/:text', function (req, res) {
+    Footprint.search(req.params.text, function(data) {
+        res.json(data);
     });
 });
 

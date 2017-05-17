@@ -3,50 +3,34 @@
  */
 
 const router = require('../../../configuration/router');
-const cn = require('../../../configuration/db');
+const Api = require('../../../configuration/api');
+const Prefix = require('../../models/inventory/prefix');
 
-router.get('/inventory/prefixes/', function (req, res) {
-    cn.query('SELECT * FROM prefixes;', function(err, rows) {
-        if (err) throw err;
-        else res.json(rows);
+router.get(Api.version+'/inventory/prefixes/', function (req, res) {
+    Prefix.getAll(function(data) {
+        res.json(data);
     });
 });
 
-router.post('/inventory/prefixes/', function (req, res) {
-    cn.query("INSERT INTO prefixes (Name) " +
-        "VALUES ('" + req.body.Name + "');", function(err, rows) {
-        if (err) throw err;
-        else res.json(true);
+router.post(Api.version+'/inventory/prefixes/', function (req, res) {
+    Prefix.insert(req.body);
+    res.json({});
+});
+
+router.get(Api.version+'/inventory/prefixes/:id', function (req, res) {
+    Prefix.getById(req.params.id, function(data) {
+        res.json(data);
     });
 });
 
-router.get('/inventory/prefixes/:id', function (req, res) {
-    cn.query("SELECT * FROM prefixes WHERE Id = "+ req.params.id +";", function(err, rows) {
-        if (err) throw err;
-        else res.json(rows[0]);
-    });
+router.put(Api.version+'/inventory/prefixes/:id', function (req, res) {
+    Prefix.update(req.params.id, req.body);
+    res.json({});
 });
 
-router.put('/inventory/prefixes/:id', function (req, res) {
-    cn.query("UPDATE prefixes SET Name = '" + req.body.Name + "' " +
-        "WHERE Id = " + req.params.id + ";", function(err, rows) {
-        if (err) throw err;
-        else res.json(true);
-    });
-});
-
-router.delete('/inventory/prefixes/:id', function (req, res) {
-    cn.query("DELETE FROM prefixes WHERE Id = " + req.params.id + ";", function(err, rows) {
-        if (err) throw err;
-        else res.json(true);
-    });
-});
-
-router.get('/inventory/prefixes/search/:text', function (req, res) {
-    cn.query("SELECT * FROM prefixes WHERE Name LIKE '%"+ req.params.text +"%';", function(err, rows) {
-        if (err) throw err;
-        else res.json(rows);
-    });
+router.delete(Api.version+'/inventory/prefixes/:id', function (req, res) {
+    Prefix.delete(req.params.id);
+    res.json({});
 });
 
 module.exports = router;
