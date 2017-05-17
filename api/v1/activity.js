@@ -6,6 +6,7 @@ const router = require('../../configuration/router');
 const Api = require('../../configuration/api');
 const Activity = require('../models/activity');
 const Bot = require('../models/telegram-bot');
+const Account = require('../models/user/account');
 
 router.get(Api.version+'/activities/count/', function (req, res) {
     Activity.count(function(data) {
@@ -20,10 +21,18 @@ router.get(Api.version+'/activities/', function (req, res) {
 });
 
 router.post(Api.version+'/activities/', function (req, res) {
-    Activity.insert(req.body);
+    //Activity.insert(req.body);
+    Account.getAllChatId(function (data) {
+        for (var i=0; i < data.length; i++) {
+            if (data[i].EmployeeId === req.body.EmployeeId && data[i].EmployeeId !== null && data[i].TelegramChatId !== null) {
+                Bot.sendMessage(data[i].TelegramChatId, 'New activity was assigned to you!', req.body);
+            }
+            else if (data[i].TelegramChatId !== null) {
+                Bot.sendMessage(data[i].TelegramChatId, 'New activity was created!', req.body);
+            }
+        }
+    });
     res.json({});
-
-    Bot.sendMessage('259695544', 'New activity was created!');
 });
 
 router.get(Api.version+'/activities/:id', function (req, res) {

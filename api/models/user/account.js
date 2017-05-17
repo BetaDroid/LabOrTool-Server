@@ -30,6 +30,13 @@ exports.getByUsername = function(_username, cb) {
     });
 };
 
+exports.getAllChatId = function (callback) {
+    db.connection.query("SELECT `TelegramChatId`, `EmployeeId` FROM `accounts`;", function(err, rows) {
+        if (err) throw err;
+        else callback(rows);
+    });
+};
+
 exports.getAll = function(callback) {
     db.connection.query("SELECT `accounts`.`Id`, `accounts`.`Username`, `roles`.`Name` AS `Role`, "+
         "CASE WHEN `accounts`.`Status`=0 THEN 'Inactive' ELSE 'Active' END AS `Status`, `accounts`.`EmployeeId`"+
