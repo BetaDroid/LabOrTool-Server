@@ -9,7 +9,7 @@ exports.getMe = function () {
 
 };
 
-exports.sendMessage = function (_chatId, _title, _data) {
+exports.sendActivity = function (_chatId, _title, _data) {
     var text = "<b>\uD83D\uDC49"+_title+"\uD83D\uDC48</b>" +
         "\n<b>Title: </b>" + _data.Title +
         "\n<b>Work code: </b>" + _data.WorkCode +
@@ -28,6 +28,23 @@ exports.sendMessage = function (_chatId, _title, _data) {
             'text': text,
             'parse_mode': 'HTML',
             'disable_notification': true
+        }
+    }, function (error, response) {
+        if (error !== null)
+            return error;
+        else
+            return response && response.statusCode;
+    });
+};
+
+exports.sendMessage = function (_chatId, _message) {
+    request.post({
+        url: Bot.url+Bot.token+'/sendMessage',
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        json: {
+            'chat_id': _chatId,
+            'text': _message
         }
     }, function (error, response) {
         if (error !== null)

@@ -2,30 +2,32 @@
  * Created by Daniel on 24/04/17.
  */
 
-const db = require('../../../configuration/db');
+'use strict';
 
-exports.getById = function(_id, cb) {
-    process.nextTick(function() {
-        db.connection.query("SELECT * FROM `accounts` WHERE `Id`=?;", [_id], function(err, rows) {
-            if (err) throw err;
-            else {
-                if (rows[0])
-                    return cb(null, rows[0]);
-                else
-                    cb(new Error('User ' + _id + ' does not exist'));
-            }
-        });
+const db = require('../../../configuration/db');
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
+
+exports.getById = function(_id, callback) {
+    db.connection.query("SELECT * FROM `accounts` WHERE `Id`=?;", [_id], function(err, rows) {
+        if (err) throw err;
+        else {
+            if (rows[0].Id === _id)
+                return callback(rows[0]);
+            else
+                return callback(null);
+        }
     });
 };
 
-exports.getByUsername = function(_username, cb) {
+exports.getByUsername = function(_username, callback) {
     db.connection.query("SELECT * FROM `accounts` WHERE `Username`=?;", [_username], function(err, rows) {
         if (err) throw err;
         else {
             if (rows[0].Username === _username)
-                return cb(null, rows[0]);
+                return callback(rows[0]);
             else
-                return cb(null, null);
+                return callback(null);
         }
     });
 };
@@ -46,3 +48,15 @@ exports.getAll = function(callback) {
     });
 };
 
+exports.validatePassword = function (_password, _hash, callback) {
+    bcrypt.compare(_password, _hash, function(err, res) {
+        callback(res);
+    });
+};
+
+exports.hashPassword = function (_password) {
+    bcrypt.hash(_password, saltRounds, function(err, hash) {
+        // Store hash in your password DB.
+        console.log(hash);
+    });
+};

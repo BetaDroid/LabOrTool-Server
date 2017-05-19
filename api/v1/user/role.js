@@ -2,21 +2,20 @@
  * Created by Daniel on 14/05/17.
  */
 
-const router = require('../../../configuration/router');
-const cn = require('../../../configuration/db');
+const Api = require('../../../configuration/api');
+const Role = require('../../models/user/role');
 
-router.get('/user/roles/', function (req, res) {
-    cn.query("SELECT * FROM `roles`;", function(err, rows) {
-        if (err) throw err;
-        else res.json(rows);
+module.exports = function(router) {
+
+    router.get(Api.version+'/user/roles/', function (req, res) {
+        Role.getAll(function(data) {
+            res.json(data);
+        });
     });
-});
 
-router.get('/user/roles/:id', function (req, res) {
-    cn.query("SELECT * FROM `roles` WHERE `Id`="+ req.params.id +";", function(err, rows) {
-        if (err) throw err;
-        else res.json(rows[0]);
+    router.get(Api.version+'/user/roles/:id', function (req, res) {
+        Role.getById(req.params.id, function(data) {
+            res.json(data);
+        });
     });
-});
-
-module.exports = router;
+};
