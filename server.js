@@ -79,6 +79,10 @@ require('.'+Api.version+'/user/role')(api);
 
 require('.'+Api.version+'/activity')(api);
 
+require('.'+Api.version+'/status')(api);
+require('.'+Api.version+'/priority')(api);
+require('.'+Api.version+'/type')(api);
+
 api.get('*', function(req, res){
     res.redirect('/');
 });
