@@ -7,8 +7,14 @@ const Employee = require('../../models/user/employee');
 
 module.exports = function(router) {
 
-    router.get(Api.version+'/user/employees/', function (req, res) {
+    router.get(Api.version+'/user/employees/count', function (req, res) {
         Employee.count(function(data) {
+            res.json(data);
+        });
+    });
+
+    router.get(Api.version+'/user/employees/', function (req, res) {
+        Employee.getAll(function(data) {
             res.json(data);
         });
     });
