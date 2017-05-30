@@ -4,6 +4,7 @@
 
 const Api = require('../../../configuration/api');
 const Manufacturer = require('../../models/inventory/manufacturer');
+const Check = require('../../models/authentication');
 
 module.exports = function(router) {
 

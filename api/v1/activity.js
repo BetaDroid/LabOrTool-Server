@@ -9,19 +9,19 @@ const Account = require('../models/user/account');
 const Check = require('../models/authentication');
 
 module.exports = function(router) {
-    router.get(Api.version+'/activities/count/', Check.isLoggedIn, function (req, res) {
+    router.get(Api.version+'/activities/count/', function (req, res) {
         Activity.count(function(data) {
             res.json(data);
         });
     });
 
-    router.get(Api.version+'/activities/', Check.isLoggedIn, function (req, res) {
+    router.get(Api.version+'/activities/', function (req, res) {
         Activity.getAll(function(data) {
             res.json(data);
         });
     });
 
-    router.post(Api.version+'/activities/', Check.isLoggedIn, function (req, res) {
+    router.post(Api.version+'/activities/', function (req, res) {
         //Activity.insert(req.body);
         Account.getAllChatId(function (data) {
             for (var i=0; i < data.length; i++) {

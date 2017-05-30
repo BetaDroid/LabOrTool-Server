@@ -18,9 +18,9 @@ exports.getAll = function(callback) {
     });
 };
 
-exports.insert = function(_category) {
-    db.connection.query("INSERT INTO `categories` (`Name`,`Note`) VALUES (?,?);",
-        [_category.Name, _category.Note],
+exports.insert = function(_company) {
+    db.connection.query("INSERT INTO `companies` (`Name`,`Note`) VALUES (?,?);",
+        [_company.Name, _company.Note],
         function(err) {
             if (err) throw err;
         }
@@ -28,15 +28,15 @@ exports.insert = function(_category) {
 };
 
 exports.getById = function(_id, callback) {
-    db.connection.query("SELECT * FROM `categories` WHERE `Id`=?", [_id], function(err, rows) {
+    db.connection.query("SELECT * FROM `companies` WHERE `Id`=?", [_id], function(err, rows) {
         if (err) throw err;
         else callback(rows[0]);
     });
 };
 
-exports.update = function(_id, _category) {
-    db.connection.query("UPDATE `categories` SET `Name`=?, `Note`=? WHERE `Id`=?;",
-        [_category.Name, _category.Note, _id],
+exports.update = function(_id, _company) {
+    db.connection.query("UPDATE `companies` SET `Name`=?, `Note`=? WHERE `Id`=?;",
+        [_company.Name, _company.Note, _id],
         function(err) {
             if (err) throw err;
         }
@@ -44,7 +44,7 @@ exports.update = function(_id, _category) {
 };
 
 exports.delete = function(_id) {
-    db.connection.query("DELETE FROM `categories` WHERE `Id`=?;", [_id], function(err) {
+    db.connection.query("DELETE FROM `companies` WHERE `Id`=?;", [_id], function(err) {
         if (err) throw err;
     });
 };

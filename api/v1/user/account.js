@@ -2,57 +2,41 @@
  * Created by Daniel on 14/05/17.
  */
 
+const Api = require('../../../configuration/api');
 const Account = require('../../models/user/account');
 
 module.exports = function(router) {
 
-    router.get('/user/accounts/', function (req, res) {
+    router.get(Api.version+'/user/accounts/', function (req, res) {
         Account.getAll(function(data) {
             res.json(data);
         });
     });
 
-    router.post('/user/accounts/', function (req, res) {
-        cn.query("INSERT INTO `accounts` (`Username`, `Password`, `RoleId`, `Status`, `EmployeeId`) "+
-            "VALUES ('"+req.body.Username+"', '"+req.body.Password+"', "+req.body.RoleId+", "+req.body.Status+
-            ", '"+req.body.EmployeeId+"');",
-            function(err, rows) {
-                if (err) throw err;
-                else res.json(true);
-            });
+    router.post(Api.version+'/user/accounts/', function (req, res) {
+        Account.insert(req.body);
+        res.json({});
     });
 
-    router.get('/user/accounts/:id', function (req, res) {
-        cn.query("SELECT * FROM `accounts` WHERE `Id`="+ req.params.id +";", function(err, rows) {
-            if (err) throw err;
-            else res.json(rows[0]);
+    router.get(Api.version+'/user/accounts/:id', function (req, res) {
+        Account.getById(req.params.id, function(data) {
+            res.json(data);
         });
     });
 
-    router.put('/user/accounts/:id', function (req, res) {
-        cn.query("UPDATE `accounts` SET `Username`='"+req.body.Name+"', `Password`='"+req.body.Password+
-            ", `RoleId`="+req.body.RoleId+", `Status`="+req.body.Status+", `EmployeeId`="+req.body.EmployeeId+
-            " WHERE `Id`="+req.params.id+";", function(err, rows) {
-            if (err) throw err;
-            else res.json(true);
-        });
+    router.put(Api.version+'/user/accounts/:id', function (req, res) {
+        Account.update(req.params.id, req.body);
+        res.json({});
     });
 
-    router.delete('/user/accounts/:id', function (req, res) {
-        cn.query("DELETE FROM `accounts` WHERE `Id`="+req.params.id+";", function(err, rows) {
-            if (err) throw err;
-            else res.json(true);
-        });
+    router.delete(Api.version+'/user/accounts/:id', function (req, res) {
+        Account.delete(req.params.id);
+        res.json({});
     });
 
-    router.get('/user/accounts/search/:text', function (req, res) {
-        cn.query("SELECT `accounts`.`Username`, `roles`.`Name` AS `Role`, "+
-            "CASE WHEN `accounts`.`Status`=0 THEN 'Inactive' ELSE 'Active' END AS `Status`, `accounts`.`EmployeeId`"+
-            "FROM `accounts` INNER JOIN `roles` ON `roles`.`Id`=`accounts`.`RoleId` WHERE `accounts`.`Username` LIKE '%"+
-            req.params.text+"%' OR `roles`.`Name` LIKE '%"+req.params.text+"%' OR `accounts`.`EmployeeId` LIKE '%"+
-            req.params.text+"%';", function(err, rows) {
-            if (err) throw err;
-            else res.json(rows);
+    router.get(Api.version+'/user/accounts/search/:text', function (req, res) {
+        Account.search(req.params.text, function(data) {
+            res.json(data);
         });
     });
 };

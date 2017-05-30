@@ -43,7 +43,7 @@ exports.getById = function(_id, callback) {
     });
 };
 
-exports.update = function(_id, _component) {
+exports.update = function(_id, _activity) {
     db.connection.query("UPDATE `activities` SET `Title`=?, `WorkCode`=?, `PriorityId`=?, `Deadline`=DATE(?), " +
         "`StatusId`=?, `TypeId`=?, `EmployeeId`=?, `Description`=?, `Editable`=? WHERE `Id`=?;",
         [_activity.Title, _activity.WorkCode, _activity.PriorityId, _activity.Deadline,

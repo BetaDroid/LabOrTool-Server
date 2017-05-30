@@ -8,6 +8,29 @@ const db = require('../../../configuration/db');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
+exports.getAll = function(callback) {
+    db.connection.query("SELECT `accounts`.`Id`, `accounts`.`Username`, `roles`.`Name` AS `RoleName`, "+
+        "CASE WHEN `accounts`.`Status`=0 THEN 'Inactive' ELSE 'Active' END AS `Status`, `accounts`.`EmployeeId`, "+
+        "`accounts`.`TelegramChatId` FROM `accounts` INNER JOIN `roles` ON `roles`.`Id`=`accounts`.`RoleId`;", function(err, rows) {
+        if (err) throw err;
+        else callback(rows);
+    });
+};
+
+exports.insert = function(_account) {
+    var pass;
+    bcrypt.hash(_account.Password, saltRounds, function(err, hash) {
+        pass = hash;
+    });
+    db.connection.query("INSERT INTO `accounts` (`Username`, `Password`, `RoleId`, `Status`, `EmployeeId`, " +
+        "`TelegramChatId`) VALUES (?,?,?,?,?,?);",
+        [_account.Username, pass, _account.RoleId, _account.Status, _account.EmployeeId, _account.TelegramChatId],
+        function(err) {
+            if (err) throw err;
+        }
+    );
+};
+
 exports.getById = function(_id, callback) {
     db.connection.query("SELECT * FROM `accounts` WHERE `Id`=?;", [_id], function(err, rows) {
         if (err) throw err;
@@ -17,6 +40,39 @@ exports.getById = function(_id, callback) {
             else
                 return callback(null);
         }
+    });
+};
+
+exports.update = function(_id, _account) {
+    var pass;
+    bcrypt.hash(_account.Password, saltRounds, function(err, hash) {
+        pass = hash;
+    });
+    db.connection.query("UPDATE `accounts` SET `Username`=?, `Password`=?, `RoleId`=?, `Status`=?, `EmployeeId`=?, " +
+        "`TelegramChatId`=? WHERE `Id`=?;",
+        [_account.Username, pass, _account.RoleId, _account.Status, _account.EmployeeId, _account.TelegramChatId, _id],
+        function(err) {
+            if (err) throw err;
+        }
+    );
+};
+
+exports.delete = function(_id) {
+    db.connection.query("DELETE FROM `accounts` WHERE `Id`=?;", [_id], function(err) {
+        if (err) throw err;
+    });
+};
+
+exports.search = function(_text, callback) {
+    db.connection.query("SELECT `accounts`.`Id`, `accounts`.`Username`, `roles`.`Name` AS `RoleName`, "+
+        "CASE WHEN `accounts`.`Status`=0 THEN 'Inactive' ELSE 'Active' END AS `Status`, `accounts`.`EmployeeId`, "+
+        "`accounts`.`TelegramChatId` FROM `accounts` " +
+        "INNER JOIN `roles` ON `roles`.`Id`=`accounts`.`RoleId` " +
+        "WHERE `accounts`.`Username` LIKE CONCAT('%',?,'%') OR `roles`.`Name` LIKE CONCAT('%',?,'%') OR " +
+        "`accounts`.`EmployeeId` LIKE CONCAT('%',?,'%') OR `accounts`.`TelegramChatId` LIKE CONCAT('%',?,'%');",
+        [_text, _text, _text, _text], function(err, rows) {
+        if (err) throw err;
+        else callback(rows);
     });
 };
 
@@ -39,24 +95,8 @@ exports.getAllChatId = function (callback) {
     });
 };
 
-exports.getAll = function(callback) {
-    db.connection.query("SELECT `accounts`.`Id`, `accounts`.`Username`, `roles`.`Name` AS `Role`, "+
-        "CASE WHEN `accounts`.`Status`=0 THEN 'Inactive' ELSE 'Active' END AS `Status`, `accounts`.`EmployeeId`"+
-        "FROM `accounts` INNER JOIN `roles` ON `roles`.`Id`=`accounts`.`RoleId`;", function(err, rows) {
-        if (err) throw err;
-        else callback(rows);
-    });
-};
-
 exports.validatePassword = function (_password, _hash, callback) {
     bcrypt.compare(_password, _hash, function(err, res) {
         callback(res);
-    });
-};
-
-exports.hashPassword = function (_password) {
-    bcrypt.hash(_password, saltRounds, function(err, hash) {
-        // Store hash in your password DB.
-        console.log(hash);
     });
 };

@@ -2,52 +2,41 @@
  * Created by Daniel on 14/05/17.
  */
 
-const cn = require('../../../configuration/db');
+const Api = require('../../../configuration/api');
+const Company = require('../../models/user/company');
 
 module.exports = function(router) {
 
-    router.get('/user/companies/', function (req, res) {
-        cn.query("SELECT * FROM `companies`;", function(err, rows) {
-            if (err) throw err;
-            else res.json(rows);
+    router.get(Api.version+'/user/companies/count/', function (req, res) {
+        Company.count(function(data) {
+            res.json(data);
         });
     });
 
-    router.post('/user/companies/', function (req, res) {
-        cn.query("INSERT INTO `companies` (`Name`, `Note`) " +
-            "VALUES ('" + req.body.Name + "', '" + req.body.Note + "');",
-            function(err, rows) {
-                if (err) throw err;
-                else res.json(true);
-            });
-    });
-
-    router.get('/user/companies/:id', function (req, res) {
-        cn.query("SELECT * FROM `companies` WHERE `Id` = " + req.params.id + ";", function(err, rows) {
-            if (err) throw err;
-            else res.json(rows[0]);
+    router.get(Api.version+'/user/companies/', function (req, res) {
+        Company.getAll(function(data) {
+            res.json(data);
         });
     });
 
-    router.put('/user/companies/:id', function (req, res) {
-        cn.query("UPDATE `companies` SET `Name` = '" + req.body.Name + "', `Note` = '" + req.body.Note + "' " +
-            "WHERE `Id` = " + req.params.id + ";", function(err, rows) {
-            if (err) throw err;
-            else res.json(true);
+    router.post(Api.version+'/user/companies/', function (req, res) {
+        Company.insert(req.body);
+        res.json({});
+    });
+
+    router.get(Api.version+'/user/companies/:id', function (req, res) {
+        Company.getById(req.params.id, function(data) {
+            res.json(data);
         });
     });
 
-    router.delete('/user/companies/:id', function (req, res) {
-        cn.query("DELETE FROM `companies` WHERE `Id` = " + req.params.id + ";", function(err, rows) {
-            if (err) throw err;
-            else res.json(true);
-        });
+    router.put(Api.version+'/user/companies/:id', function (req, res) {
+        Company.update(req.params.id, req.body);
+        res.json({});
     });
 
-    router.get('/user/companies/search/:text', function (req, res) {
-        cn.query("SELECT * FROM `companies` WHERE `Name` LIKE '%" + req.params.text + "%';", function(err, rows) {
-            if (err) throw err;
-            else res.json(rows);
-        });
+    router.delete(Api.version+'/user/companies/:id', function (req, res) {
+        Company.delete(req.params.id);
+        res.json({});
     });
 };
