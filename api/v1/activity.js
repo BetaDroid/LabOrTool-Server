@@ -22,7 +22,7 @@ module.exports = function(router) {
     });
 
     router.post(Api.version+'/activities/', function (req, res) {
-        //Activity.insert(req.body);
+        Activity.insert(req.body);
         Account.getAllChatId(function (data) {
             for (var i=0; i < data.length; i++) {
                 if (data[i].EmployeeId === req.body.EmployeeId && data[i].EmployeeId !== null && data[i].TelegramChatId !== null) {

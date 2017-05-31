@@ -13,7 +13,7 @@ exports.count = function(callback) {
 
 exports.getAll = function(callback) {
     db.connection.query("SELECT `activities`.`Id`, `activities`.`Title`, `activities`.`WorkCode`, " +
-        "`priorities`.`Name` AS `PriorityName`, `activities`.`Deadline`, `statuses`.`Name` AS `StatusName`, " +
+        "`priorities`.`Name` AS `PriorityName`, DATE_FORMAT(`activities`.`Deadline`, '%d-%m-%Y') AS `Deadline`, `statuses`.`Name` AS `StatusName`, " +
         "`types`.`Name` AS `TypeName`, CONCAT(`employees`.`Name`, ' ', `employees`.`Surname`) AS `EmployeeNS` " +
         "FROM `activities`"+
         "INNER JOIN `priorities` ON `priorities`.`Id`=`activities`.`PriorityId` "+
@@ -26,10 +26,17 @@ exports.getAll = function(callback) {
 };
 
 exports.insert = function(_activity) {
+    var Employee = "";
+
+    if (_activity.EmployeeId === "")
+        Employee = null;
+    else
+        Employee = _activity.EmployeeId;
+
     db.connection.query("INSERT INTO `activities` (`Title`, `WorkCode`, `PriorityId`, `Deadline`, `StatusId`, " +
         "`TypeId`, `EmployeeId`, `Description`, `Editable`) VALUES (?,?,?,DATE(?),?,?,?,?,?);",
         [_activity.Title, _activity.WorkCode, _activity.PriorityId, _activity.Deadline,
-            _activity.StatusId, _activity.TypeId, _activity.EmployeeId, _activity.Description, _activity.Editable],
+            _activity.StatusId, _activity.TypeId, Employee, _activity.Description, _activity.Editable],
         function(err) {
             if (err) throw err;
         }
