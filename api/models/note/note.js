@@ -5,20 +5,21 @@
 const db = require('../../../configuration/db');
 
 exports.count = function(callback) {
-    db.connection.query("SELECT COUNT(`Id`) AS `nNot` FROM `notes`;", function(err, rows) {
+    db.connection.query("SELECT COUNT(`Id`) AS `Notes` FROM `notes`;", function(err, rows) {
+        if (err) throw err;
+        else callback(rows[0]);
+    });
+};
+
+exports.countPerParent = function(_id, callback) {
+    db.connection.query("SELECT COUNT(`Id`) AS `Notes` FROM `notes` WHERE `ParentId`=?;", [_id], function(err, rows) {
         if (err) throw err;
         else callback(rows[0]);
     });
 };
 
 exports.getAll = function(callback) {
-    db.connection.query("SELECT `notes`.`Id`, `notetypes`.`Name` AS `NoteTypeName`, `notes`.`ParentId`, `notes`.`Body`, " +
-        "CONCAT(`employees`.`Name`, ' ', `employees`.`Surname`) AS `EmployeeCreation`, `notes`.`DateCreation`, " +
-        "CONCAT(`employees`.`Name`, ' ', `employees`.`Surname`) AS `EmployeeModification`, `notes`.`DateModification` " +
-        "FROM `notes` " +
-        "INNER JOIN `notetypes` ON `notetypes`.`Id`=`notes`.`NoteTypeId` " +
-        "INNER JOIN `employees` ON `employees`.`Id`=`notes`.`EmployeeCreationId` " +
-        "INNER JOIN `employees` ON `employees`.`Id`=`notes`.`EmployeeModificationId`;", function(err, rows) {
+    db.connection.query("SELECT * FROM `getAllNotes`;", function(err, rows) {
         if (err) throw err;
         else callback(rows);
     });
@@ -36,7 +37,7 @@ exports.insert = function(_note) {
 };
 
 exports.getById = function(_id, callback) {
-    db.connection.query("SELECT * FROM `notes` WHERE `Id`=?", [_id], function(err, rows) {
+    db.connection.query("SELECT * FROM `getAllNotes` WHERE `ParentId`=?", [_id], function(err, rows) {
         if (err) throw err;
         else callback(rows[0]);
     });
@@ -57,3 +58,5 @@ exports.delete = function(_id) {
         if (err) throw err;
     });
 };
+
+// TODO: search method

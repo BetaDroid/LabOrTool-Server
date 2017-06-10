@@ -5,7 +5,7 @@
 const db = require('../../../configuration/db');
 
 exports.count = function(callback) {
-    db.connection.query("SELECT COUNT(`Id`) as `nLoc` FROM `locations`;", function(err, rows) {
+    db.connection.query("SELECT COUNT(`Id`) as `Locations` FROM `locations`;", function(err, rows) {
         if (err) throw err;
         else callback(rows[0]);
     });

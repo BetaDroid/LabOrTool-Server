@@ -83,6 +83,9 @@ require('.'+Api.version+'/status')(api);
 require('.'+Api.version+'/priority')(api);
 require('.'+Api.version+'/type')(api);
 
+
+require('.'+Api.version+'/board/board')(api);
+
 api.get('*', function(req, res){
     res.redirect('/');
 });

@@ -8,12 +8,30 @@ const db = require('../../../configuration/db');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
+exports.count = function(callback) {
+    db.connection.query("SELECT COUNT(`Id`) AS `Accounts` FROM `accounts`;", function(err, rows) {
+        if (err) throw err;
+        else callback(rows[0]);
+    });
+};
+
 exports.getAll = function(callback) {
-    db.connection.query("SELECT `accounts`.`Id`, `accounts`.`Username`, `roles`.`Name` AS `RoleName`, "+
-        "CASE WHEN `accounts`.`Status`=0 THEN 'Inactive' ELSE 'Active' END AS `Status`, `accounts`.`EmployeeId`, "+
-        "`accounts`.`TelegramChatId` FROM `accounts` INNER JOIN `roles` ON `roles`.`Id`=`accounts`.`RoleId`;", function(err, rows) {
+    db.connection.query("SELECT * FROM `getAllAccounts-Short`;", function(err, rows) {
         if (err) throw err;
         else callback(rows);
+    });
+};
+
+exports.getAllChatId = function (callback) {
+    db.connection.query("SELECT `TelegramChatId`, `EmployeeId` FROM `accounts`;", function(err, rows) {
+        if (err) throw err;
+        else callback(rows);
+    });
+};
+
+exports.validatePassword = function (_password, _hash, callback) {
+    bcrypt.compare(_password, _hash, function(err, res) {
+        callback(res);
     });
 };
 
@@ -64,10 +82,7 @@ exports.delete = function(_id) {
 };
 
 exports.search = function(_text, callback) {
-    db.connection.query("SELECT `accounts`.`Id`, `accounts`.`Username`, `roles`.`Name` AS `RoleName`, "+
-        "CASE WHEN `accounts`.`Status`=0 THEN 'Inactive' ELSE 'Active' END AS `Status`, `accounts`.`EmployeeId`, "+
-        "`accounts`.`TelegramChatId` FROM `accounts` " +
-        "INNER JOIN `roles` ON `roles`.`Id`=`accounts`.`RoleId` " +
+    db.connection.query("SELECT * FROM `getAllAccounts-Short`" +
         "WHERE `accounts`.`Username` LIKE CONCAT('%',?,'%') OR `roles`.`Name` LIKE CONCAT('%',?,'%') OR " +
         "`accounts`.`EmployeeId` LIKE CONCAT('%',?,'%') OR `accounts`.`TelegramChatId` LIKE CONCAT('%',?,'%');",
         [_text, _text, _text, _text], function(err, rows) {
@@ -85,18 +100,5 @@ exports.getByUsername = function(_username, callback) {
             else
                 return callback(null);
         }
-    });
-};
-
-exports.getAllChatId = function (callback) {
-    db.connection.query("SELECT `TelegramChatId`, `EmployeeId` FROM `accounts`;", function(err, rows) {
-        if (err) throw err;
-        else callback(rows);
-    });
-};
-
-exports.validatePassword = function (_password, _hash, callback) {
-    bcrypt.compare(_password, _hash, function(err, res) {
-        callback(res);
     });
 };

@@ -4,30 +4,27 @@
 
 const db = require('../../../configuration/db');
 
-exports.count = function(callback) {
-    db.connection.query("SELECT COUNT(`Id`) AS `nComPar` FROM `componentparams`;", function(err, rows) {
+exports.count = function(_id, callback) {
+    db.connection.query("SELECT COUNT(`Id`) AS `ComponentParams` FROM `componentparams`" +
+        "WHERE `ComponentId`=?;", [_id], function(err, rows) {
         if (err) throw err;
         else callback(rows[0]);
     });
 };
 
 exports.getAll = function(_id, callback) {
-    db.connection.query("SELECT `componentparams`.`Id`, `componentparams`.`ComponentId`, `categoryparamtypes`.`Name` AS `CPTName`, " +
-        "`componentparams`.`Value`, `prefixes`.`Name` AS `PrefixName` " +
-        "FROM `componentparams` " +
-        "INNER JOIN `categoryparamtypes` ON `categoryparamtypes`.`Id`=`componentparams`.`CategoryParamTypeId` " +
-        "INNER JOIN `prefixes` ON `prefixes`.`Id`=`componentparams`.`PrefixId` " +
-        "WHERE `componentparams`.`ComponentId`=?;", [_id], function(err, rows) {
+    db.connection.query("SELECT * FROM `getAllCP-Short` " +
+        "WHERE `ComponentId`=?;", [_id], function(err, rows) {
         if (err) throw err;
         else callback(rows);
     });
 };
 
-exports.insert = function(_componentparams) {
+exports.insert = function(_componentparam) {
     db.connection.query("INSERT INTO `componentparams` (`ComponentId`, `CategoryParamTypeId`, `Value`, `PrefixId`, `Note`) " +
         "VALUES (?,?,?,?,?);",
-        [_componentparams.ComponentId, _componentparams.CategoryParamTypeId, _componentparams.Value,
-            _componentparams.PrefixId, _componentparams.Note],
+        [_componentparam.ComponentId, _componentparam.CategoryParamTypeId, _componentparam.Value,
+            _componentparam.PrefixId, _componentparam.Note],
         function(err) {
             if (err) throw err;
         }
@@ -41,11 +38,11 @@ exports.getById = function(_id, callback) {
     });
 };
 
-exports.update = function(_id, _componentparams) {
+exports.update = function(_id, _componentparam) {
     db.connection.query("UPDATE `componentparams` SET `ComponentId`=?, `CategoryParamTypeId`= ?, `Value`=?, " +
         "`PrefixId`=?, `Note`=? WHERE `Id`=?;",
-        [_componentparams.ComponentId, _componentparams.CategoryParamTypeId, _componentparams.Value,
-            _componentparams.PrefixId, _componentparams.Note, _id],
+        [_componentparam.ComponentId, _componentparam.CategoryParamTypeId, _componentparam.Value,
+            _componentparam.PrefixId, _componentparam.Note, _id],
         function(err) {
             if (err) throw err;
         }

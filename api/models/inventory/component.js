@@ -5,20 +5,14 @@
 const db = require('../../../configuration/db');
 
 exports.count = function(callback) {
-    db.connection.query("SELECT COUNT(`Id`) AS `nCom` FROM `components`;", function(err, rows) {
+    db.connection.query("SELECT COUNT(`Id`) AS `Components` FROM `components`;", function(err, rows) {
         if (err) throw err;
         else callback(rows[0]);
     });
 };
 
 exports.getAll = function(callback) {
-    db.connection.query("SELECT `components`.`Id`, `components`.`Name`, `manufacturers`.`Name` AS `ManufacturerName`, " +
-    "`components`.`PartNumber`, `components`.`DistributorCode`,`components`.`Price`, `components`.`Datasheet`, " +
-    "`footprints`.`Name` AS `FootprintName`, `footprints`.`Name` AS `Footprintname`, `categories`.`Name` AS `CategoryName` " +
-    "FROM `components` " +
-    "INNER JOIN `manufacturers` ON `manufacturers`.`Id`=`components`.`ManufacturerId` " +
-    "INNER JOIN `footprints` ON `footprints`.`Id`=`components`.`FootprintId` " +
-    "INNER JOIN `categories` ON `categories`.`Id`=`components`.`CategoryId`;", function(err, rows) {
+    db.connection.query("SELECT * FROM `getAllComponents-Short`;", function(err, rows) {
         if (err) throw err;
         else callback(rows);
     });
@@ -64,20 +58,14 @@ exports.delete = function(_id) {
 };
 
 exports.search = function(_text, callback) {
-    db.connection.query("SELECT `components`.`Id`, `components`.`Name`, `manufacturers`.`Name` AS `ManufacturerName`, " +
-    "`components`.`PartNumber`, `components`.`DistributorCode`,`components`.`Price`, `components`.`Datasheet`, " +
-    "`footprints`.`Name` AS `FootprintName`, `footprints`.`Name` AS `Footprintname`, `categories`.`Name` AS `CategoryName` " +
-    "FROM `components` " +
-    "INNER JOIN `manufacturers` ON `manufacturers`.`Id`=`components`.`ManufacturerId` " +
-    "INNER JOIN `footprints` ON `footprints`.`Id`=`components`.`FootprintId` " +
-    "INNER JOIN `categories` ON `categories`.`Id`=`components`.`CategoryId` " +
-    "WHERE `components`.`Name` LIKE CONCAT('%',?,'%') OR " +
-    "`manufacturers`.`Name` LIKE CONCAT('%',?,'%') OR " +
-    "`components`.`PartNumber` LIKE CONCAT('%',?,'%') OR " +
-    "`components`.`DistributorCode` LIKE CONCAT('%',?,'%') OR " +
-    "`components`.`Price` LIKE CONCAT('%',?,'%') OR " +
-    "`footprints`.`Name` LIKE CONCAT('%',?,'%') OR " +
-    "`categories`.`Name` LIKE CONCAT('%',?,'%');", [_text, _text, _text, _text, _text, _text, _text], function(err, rows) {
+    db.connection.query("SELECT * FROM `getAllComponents-Short` " +
+    "WHERE `Name` LIKE CONCAT('%',?,'%') OR " +
+    "`ManufacturerName` LIKE CONCAT('%',?,'%') OR " +
+    "`PartNumber` LIKE CONCAT('%',?,'%') OR " +
+    "`DistributorCode` LIKE CONCAT('%',?,'%') OR " +
+    "`Price` LIKE CONCAT('%',?,'%') OR " +
+    "`FootprintName` LIKE CONCAT('%',?,'%') OR " +
+    "`CategoryName` LIKE CONCAT('%',?,'%');", [_text, _text, _text, _text, _text, _text, _text], function(err, rows) {
         if (err) throw err;
         else callback(rows);
     });

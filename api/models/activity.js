@@ -5,21 +5,14 @@
 const db = require('../../configuration/db');
 
 exports.count = function(callback) {
-    db.connection.query("SELECT COUNT(`Id`) AS `nAct` FROM `activities`;", function(err, rows) {
+    db.connection.query("SELECT COUNT(`Id`) AS `Activities` FROM `activities`;", function(err, rows) {
         if (err) throw err;
         else callback(rows[0]);
     });
 };
 
 exports.getAll = function(callback) {
-    db.connection.query("SELECT `activities`.`Id`, `activities`.`Title`, `activities`.`WorkCode`, " +
-        "`priorities`.`Name` AS `PriorityName`, DATE_FORMAT(`activities`.`Deadline`, '%d-%m-%Y') AS `Deadline`, `statuses`.`Name` AS `StatusName`, " +
-        "`types`.`Name` AS `TypeName`, CONCAT(`employees`.`Name`, ' ', `employees`.`Surname`) AS `EmployeeNS` " +
-        "FROM `activities`"+
-        "INNER JOIN `priorities` ON `priorities`.`Id`=`activities`.`PriorityId` "+
-        "INNER JOIN `statuses` ON `statuses`.`Id`=`activities`.`StatusId` "+
-        "INNER JOIN `types` ON `types`.`Id`=`activities`.`TypeId` "+
-        "INNER JOIN `employees` ON `employees`.`Id`=`activities`.`EmployeeId`;", function(err, rows) {
+    db.connection.query("SELECT * FROM `getAllActivities-Short`;", function(err, rows) {
         if (err) throw err;
         else callback(rows);
     });
@@ -34,7 +27,7 @@ exports.insert = function(_activity) {
         Employee = _activity.EmployeeId;
 
     db.connection.query("INSERT INTO `activities` (`Title`, `WorkCode`, `PriorityId`, `Deadline`, `StatusId`, " +
-        "`TypeId`, `EmployeeId`, `Description`, `Editable`) VALUES (?,?,?,DATE(?),?,?,?,?,?);",
+        "`TypeId`, `EmployeeId`, `Description`, `Editable`) VALUES (?,?,?,?,?,?,?,?,?);",
         [_activity.Title, _activity.WorkCode, _activity.PriorityId, _activity.Deadline,
             _activity.StatusId, _activity.TypeId, Employee, _activity.Description, _activity.Editable],
         function(err) {
@@ -68,18 +61,14 @@ exports.delete = function(_id) {
 };
 
 exports.search = function(_text, callback) {
-    db.connection.query("SELECT `activities`.`Id`, `activities`.`Title`, `activities`.`WorkCode`, " +
-        "`priorities`.`Name` AS `PriorityName`, `activities`.`Deadline`, `statuses`.`Name` AS `StatusName`, " +
-        "`types`.`Name` AS `TypeName`, CONCAT(`employees`.`Name`, ' ', `employees`.`Surname`) AS `EmployeeNS` " +
-        "FROM `activities`"+
-        "INNER JOIN `priorities` ON `priorities`.`Id`=`activities`.`PriorityId` "+
-        "INNER JOIN `statuses` ON `statuses`.`Id`=`activities`.`StatusId` "+
-        "INNER JOIN `types` ON `types`.`Id`=`activities`.`TypeId` "+
-        "INNER JOIN `employees` ON `employees`.`Id`=`activities`.`EmployeeId` " +
-        "WHERE `activities`.`Title` LIKE CONCAT('%',?,'%') OR `activities`.`WorkCode` LIKE CONCAT('%',?,'%') OR " +
-        "`priorities`.`Name` LIKE CONCAT('%',?,'%') OR `activities`.`Deadline` LIKE CONCAT('%',?,'%') OR " +
-        "`statuses`.`Name` LIKE CONCAT('%',?,'%') OR `types`.`Name` LIKE CONCAT('%',?,'%') OR "+
-        "CONCAT(`employees`.`Name`, ' ', `employees`.`Surname`) LIKE CONCAT('%',?,'%');",
+    db.connection.query("SELECT * FROM `getAllActivities-Short` " +
+        "WHERE `Title` LIKE CONCAT('%',?,'%') OR " +
+        "`WorkCode` LIKE CONCAT('%',?,'%') OR " +
+        "`PriorityName` LIKE CONCAT('%',?,'%') OR " +
+        "`Deadline` LIKE CONCAT('%',?,'%') OR " +
+        "`StatusName` LIKE CONCAT('%',?,'%') OR " +
+        "``TypeName` LIKE CONCAT('%',?,'%') OR "+
+        "`Employee` LIKE CONCAT('%',?,'%');",
         [_text, _text, _text, _text, _text, _text, _text], function(err, rows) {
             if (err) throw err;
             else callback(rows);

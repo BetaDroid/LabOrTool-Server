@@ -5,21 +5,14 @@
 const db = require('../../configuration/db');
 
 exports.count = function(callback) {
-    db.connection.query("SELECT COUNT(`Id`) AS `nPro` FROM `productions`;", function(err, rows) {
+    db.connection.query("SELECT COUNT(`Id`) AS `Productions` FROM `productions`;", function(err, rows) {
         if (err) throw err;
         else callback(rows[0]);
     });
 };
 
 exports.getAll = function(callback) {
-    db.connection.query("SELECT `productions`.`Id`, `activities`.`Title`, `boards`.`Name`, `productions`.`Quantity`, " +
-        "`productions`.`WorkCode`, `productions`.`Deadline`, `productions`.`StatusId`, " +
-        "CONCAT(`employees`.`Name`, ' ', `employees`.`Surname`), `manufacturers`.`Name`" +
-        "FROM `productions` " +
-        "INNER JOIN `activities` ON `activities`.`Id`=`productions`.`ActivityId` " +
-        "INNER JOIN `boards` ON `boards`.`Id`=`productions`.`BoardId` " +
-        "INNER JOIN `employees` ON `employees`.`Id`=`productions`.`EmployeeId` " +
-        "INNER JOIN `manufacturers` ON `manufacturers`.`Id`=`productions`.`ManufacturerId`;", function(err, rows) {
+    db.connection.query("SELECT * FROM `getAllProductions-Short`;", function(err, rows) {
         if (err) throw err;
         else callback(rows);
     });
@@ -64,24 +57,15 @@ exports.delete = function(_id) {
 };
 
 exports.search = function(_text, callback) {
-    db.connection.query("SELECT `productions`.`Id`, `activities`.`Title` AS `ActivityTitle`, " +
-        "`boards`.`Name` AS `BoardName`, `productions`.`Quantity`, " +
-        "`productions`.`WorkCode`, `productions`.`Deadline`, `statuses`.`Name` AS `StatusName`, " +
-        "CONCAT(`employees`.`Name`, ' ', `employees`.`Surname`) AS `Employee`, `manufacturers`.`Name` AS `ManufacturerName` " +
-        "FROM `productions` " +
-        "INNER JOIN `activities` ON `activities`.`Id`=`productions`.`ActivityId` " +
-        "INNER JOIN `boards` ON `boards`.`Id`=`productions`.`BoardId` " +
-        "INNER JOIN `statuses` ON `statuses`.`Id`=`productions`.`StatusId` " +
-        "INNER JOIN `employees` ON `employees`.`Id`=`productions`.`EmployeeId` " +
-        "INNER JOIN `manufacturers` ON `manufacturers`.`Id`=`productions`.`ManufacturerId` " +
-        "WHERE `activities`.`Title` LIKE CONCAT('%',?,'%') OR " +
-        "`boards`.`Name` LIKE CONCAT('%',?,'%') OR " +
-        "`productions`.`Quantity` LIKE CONCAT('%',?,'%') OR " +
-        "`productions`.`WorkCode` LIKE CONCAT('%',?,'%') OR " +
-        "`productions`.`Deadline` LIKE CONCAT('%',?,'%') OR " +
-        "`statuses`.`Name` LIKE CONCAT('%',?,'%') OR " +
-        "CONCAT(`employees`.`Name`, ' ', `employees`.`Surname`) LIKE CONCAT('%',?,'%')," +
-        "`manufacturers`.`Name` LIKE CONCAT('%',?,'%');", [_text, _text, _text, _text, _text, _text, _text, _text], function(err, rows) {
+    db.connection.query("SELECT * FROM `getAllProductions-Short` " +
+        "WHERE `ActivityTitle` LIKE CONCAT('%',?,'%') OR " +
+        "`BoardName` LIKE CONCAT('%',?,'%') OR " +
+        "`Quantity` LIKE CONCAT('%',?,'%') OR " +
+        "`WorkCode` LIKE CONCAT('%',?,'%') OR " +
+        "`Deadline` LIKE CONCAT('%',?,'%') OR " +
+        "`StatusName` LIKE CONCAT('%',?,'%') OR " +
+        "`Employee` LIKE CONCAT('%',?,'%')," +
+        "`ManufacturerName` LIKE CONCAT('%',?,'%');", [_text, _text, _text, _text, _text, _text, _text, _text], function(err, rows) {
         if (err) throw err;
         else callback(rows);
     });

@@ -4,21 +4,24 @@
 
 const db = require('../../../configuration/db');
 
+exports.count = function(callback) {
+    db.connection.query("SELECT COUNT(`Id`) AS `CategoryParamTypes` FROM `categoryparamtypes`;", function(err, rows) {
+        if (err) throw err;
+        else callback(rows[0]);
+    });
+};
+
 exports.getAll = function(callback) {
-    db.connection.query("SELECT `categoryparamtypes`.`Id`, `categoryparamtypes`.`Name`, " +
-        "`categories`.`Name` AS `CategoryName`, `units`.`Name` AS `UnitName`, `categoryparamtypes`.`Order` " +
-        "FROM `categoryparamtypes` " +
-        "INNER JOIN `categories` ON `categories`.`Id` = `categoryparamtypes`.`CategoryId` " +
-        "INNER JOIN `units` ON `units`.`Id` = `categoryparamtypes`.`UnitId`;", function(err, rows) {
+    db.connection.query("SELECT * FROM `getAllCPT-Short`;", function(err, rows) {
         if (err) throw err;
         else callback(rows);
     });
 };
 
 exports.insert = function(_cpt) {
-    db.connection.query("INSERT INTO `categoryparamtypes` (`Name`, `CategoryId`, `UnitId`, `Order`, `Note`) " +
-        "VALUES (?,?,?,?,?);",
-        [_cpt.Name, _cpt.CategoryId, _cpt.UnitId, _cpt.Order , _cpt.Note],
+    db.connection.query("INSERT INTO `categoryparamtypes` (`Name`, `CategoryId`, `UnitId`, `Note`) " +
+        "VALUES (?,?,?,?);",
+        [_cpt.Name, _cpt.CategoryId, _cpt.UnitId, _cpt.Note],
         function(err) {
             if (err) throw err;
         }
@@ -33,9 +36,9 @@ exports.getById = function(_id, callback) {
 };
 
 exports.update = function(_id, _cpt) {
-    db.connection.query("UPDATE `categoryparamtypes` SET `Name`=?, `CategoryId`=?, `UnitId`=?, `Order`=?, `Note`=? " +
+    db.connection.query("UPDATE `categoryparamtypes` SET `Name`=?, `CategoryId`=?, `UnitId`=?, `Note`=? " +
         "WHERE `Id`=?;",
-        [_cpt.Name, _cpt.CategoryId, _cpt.UnitId, _cpt.Order , _cpt.Note, _id],
+        [_cpt.Name, _cpt.CategoryId, _cpt.UnitId, _cpt.Note, _id],
         function(err) {
             if (err) throw err;
         }
@@ -49,15 +52,10 @@ exports.delete = function(_id) {
 };
 
 exports.search = function(_text, callback) {
-    db.connection.query("SELECT `categoryparamtypes`.`Id`, `categoryparamtypes`.`Name`, " +
-        "`categories`.`Name` AS `CategoryName`, `units`.`Name` AS `UnitName`, `categoryparamtypes`.`Order` " +
-        "FROM `categoryparamtypes` " +
-        "INNER JOIN `categories` ON `categories`.`Id` = `categoryparamtypes`.`CategoryId` " +
-        "INNER JOIN `units` ON `units`.`Id` = `categoryparamtypes`.`UnitId` " +
-        "WHERE `categoryparamtypes`.`Name` LIKE CONCAT('%',?,'%') OR " +
-        "`categories`.`Name` LIKE CONCAT('%',?,'%') OR " +
-        "`units`.`Name` LIKE CONCAT('%',?,'%') OR " +
-        "`categoryparamtypes`.`Order` LIKE CONCAT('%',?,'%');", [_text, _text, _text, _text], function(err, rows) {
+    db.connection.query("SELECT * FROM `getAllCPT-Short` " +
+        "WHERE `Name` LIKE CONCAT('%',?,'%') OR " +
+        "`CategoryName` LIKE CONCAT('%',?,'%') OR " +
+        "`UnitName` LIKE CONCAT('%',?,'%');", [_text, _text, _text], function(err, rows) {
         if (err) throw err;
         else callback(rows);
     });
