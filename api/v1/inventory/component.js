@@ -4,45 +4,88 @@
 
 const Api = require('../../../configuration/api');
 const Component = require('../../models/inventory/component');
+const Messages = require('../../messages/messages');
 
 module.exports = function(router) {
 
     router.get(Api.version+'/inventory/components/count/', function (req, res) {
         Component.count(function(data) {
-            res.json(data);
+            res.status(200).json(data);
         });
     });
 
     router.get(Api.version+'/inventory/components/', function (req, res) {
         Component.getAll(function(data) {
-            res.json(data);
+            res.status(200).json(data);
         });
     });
 
     router.post(Api.version+'/inventory/components/', function (req, res) {
-        Component.insert(req.body);
-        res.json({});
+
+        var component = req.body;
+        if (component.Name === "" ||
+            !component.ManufacturerId ||
+            component.PartNumber === "" ||
+            !component.DistributorId ||
+            component.DistributorCode === "" ||
+            component.Price === "" ||
+            component.Code === "" ||
+            !component.LocationId ||
+            component.Datasheet === "" ||
+            !component.FootprintId ||
+            !component.CategoryId)
+            res.status(400).json(Messages.inputError);
+        else {
+            Component.insert(component);
+            res.status(202).json(Messages.inputAccepted);
+        }
     });
 
     router.get(Api.version+'/inventory/components/:id', function (req, res) {
         Component.getById(req.params.id, function(data) {
-            res.json(data);
+            res.status(200).json(data);
         });
     });
 
     router.put(Api.version+'/inventory/components/:id', function (req, res) {
-        Component.update(req.params.id, req.body);
-        res.json({});
+
+        var component = req.body;
+        var id = req.params.id;
+        if (id === "" ||
+            id === 0 ||
+            component.Name === "" ||
+            !component.ManufacturerId ||
+            component.PartNumber === "" ||
+            !component.DistributorId ||
+            component.DistributorCode === "" ||
+            component.Price === "" ||
+            component.Code === "" ||
+            !component.LocationId ||
+            component.Datasheet === "" ||
+            !component.FootprintId ||
+            !component.CategoryId)
+            res.status(400).json(Messages.inputError);
+        else {
+            Component.update(id, component);
+            res.status(202).json(Messages.inputAccepted);
+        }
     });
 
     router.delete(Api.version+'/inventory/components/:id', function (req, res) {
-        Component.delete(req.params.id);
-        res.json({});
+
+        var id = req.params.id;
+        if (id === "" &&
+            id === 0)
+            res.status(400).json(Messages.inputError);
+        else {
+            Component.delete(id);
+            res.status(202).json(Messages.inputAccepted);
+        }
     });
 
     router.get(Api.version+'/inventory/components/search/:text', function (req, res) {
         Component.search(req.params.text, function(data) {
-            res.json(data);
+            res.status(200).json(data);
         });
     });
 };

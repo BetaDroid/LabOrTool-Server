@@ -28,14 +28,14 @@ module.exports = function(router) {
             board.Particular === "")
             res.status(400).json(Messages.inputError);
         else {
-            Board.insert(req.body);
+            Board.insert(board);
             res.status(202).json(Messages.inputAccepted);
         }
     });
 
     router.get(Api.version+'/boards/:id', function (req, res) {
-        Board.status(200).getById(req.params.id, function(data) {
-            res.json(data);
+        Board.getById(req.params.id, function(data) {
+            res.status(200).json(data);
         });
     });
 
@@ -50,7 +50,7 @@ module.exports = function(router) {
             board.Particular === "")
             res.status(400).json(Messages.inputError);
         else {
-            Board.update(id, req.body);
+            Board.update(id, board);
             res.status(202).json(Messages.inputAccepted);
         }
     });

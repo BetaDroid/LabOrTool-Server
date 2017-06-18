@@ -4,39 +4,72 @@
 
 const Api = require('../../../configuration/api');
 const CPT = require('../../models/inventory/category-param-type');
+const Messages = require('../../messages/messages');
 
 module.exports = function(router) {
 
+    router.get(Api.version+'/inventory/category-param-types/count/', function (req, res) {
+        CPT.count(function(data) {
+            res.status(200).json(data);
+        });
+    });
+
     router.get(Api.version+'/inventory/category-param-types/', function (req, res) {
         CPT.getAll(function(data) {
-            res.json(data);
+            res.status(200).json(data);
         });
     });
 
     router.post(Api.version+'/inventory/category-param-types/', function (req, res) {
-        CPT.insert(req.body);
-        res.json({});
+
+        var cpt = req.body;
+        if (cpt.Name === "" ||
+            !cpt.CategoryId ||
+            !cpt.UnitId)
+            res.status(400).json(Messages.inputError);
+        else {
+            CPT.insert(cpt);
+            res.status(202).json(Messages.inputAccepted);
+        }
     });
 
     router.get(Api.version+'/inventory/category-param-types/:id', function (req, res) {
         CPT.getById(req.params.id, function(data) {
-            res.json(data);
+            res.status(200).json(data);
         });
     });
 
     router.put(Api.version+'/inventory/category-param-types/:id', function (req, res) {
-        CPT.update(req.params.id, req.body);
-        res.json({});
+
+        var cpt = req.body;
+        var id = req.params.id;
+        if (id === "" ||
+            id === 0 ||
+            cpt.Name === "" ||
+            !cpt.CategoryId ||
+            !cpt.UnitId)
+            res.status(400).json(Messages.inputError);
+        else {
+            CPT.update(id, cpt);
+            res.status(202).json(Messages.inputAccepted);
+        }
     });
 
     router.delete(Api.version+'/inventory/category-param-types/:id', function (req, res) {
-        CPT.delete(req.params.id);
-        res.json({});
+
+        var id = req.params.id;
+        if (id === "" &&
+            id === 0)
+            res.status(400).json(Messages.inputError);
+        else {
+            CPT.delete(id);
+            res.status(202).json(Messages.inputAccepted);
+        }
     });
 
     router.get(Api.version+'/inventory/category-param-types/search/:text', function (req, res) {
         CPT.search(req.params.text, function(data) {
-            res.json(data);
+            res.status(200).json(data);
         });
     });
 };

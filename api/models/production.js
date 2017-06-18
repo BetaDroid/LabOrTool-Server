@@ -64,8 +64,7 @@ exports.search = function(_text, callback) {
         "`WorkCode` LIKE CONCAT('%',?,'%') OR " +
         "`Deadline` LIKE CONCAT('%',?,'%') OR " +
         "`StatusName` LIKE CONCAT('%',?,'%') OR " +
-        "`Employee` LIKE CONCAT('%',?,'%')," +
-        "`ManufacturerName` LIKE CONCAT('%',?,'%');", [_text, _text, _text, _text, _text, _text, _text, _text], function(err, rows) {
+        "`Employee` LIKE CONCAT('%',?,'%');", [_text, _text, _text, _text, _text, _text, _text], function(err, rows) {
         if (err) throw err;
         else callback(rows);
     });

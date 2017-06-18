@@ -9,6 +9,7 @@ const Account = require('../models/user/account');
 const Check = require('../models/authentication');
 
 module.exports = function(router) {
+
     router.get(Api.version+'/activities/count/', function (req, res) {
         Activity.count(function(data) {
             res.json(data);
@@ -57,5 +58,4 @@ module.exports = function(router) {
             res.json(data);
         });
     });
-
 };

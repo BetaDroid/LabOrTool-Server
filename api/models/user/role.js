@@ -4,6 +4,13 @@
 
 const db = require('../../../configuration/db');
 
+exports.count = function(callback) {
+    db.connection.query("SELECT COUNT(`Id`) AS `Roles` FROM `roles`;", function(err, rows) {
+        if (err) throw err;
+        else callback(rows[0]);
+    });
+};
+
 exports.getAll = function(callback) {
     db.connection.query("SELECT * FROM `roles`;", function(err, rows) {
         if (err) throw err;

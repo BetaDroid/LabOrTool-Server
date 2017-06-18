@@ -61,16 +61,23 @@ api.use(passport.session());
 const Api = require('./configuration/api');
 require('.'+Api.version+'/authentication')(api, passport);
 
-require('.'+Api.version+'/inventory/distributor')(api);
-require('.'+Api.version+'/inventory/manufacturer')(api);
-require('.'+Api.version+'/inventory/location')(api);
-require('.'+Api.version+'/inventory/footprint')(api);
+require('.'+Api.version+'/board/board')(api);
+require('.'+Api.version+'/board/bom')(api);
+require('.'+Api.version+'/board/bom-element')(api);
+
 require('.'+Api.version+'/inventory/category')(api);
+require('.'+Api.version+'/inventory/category-param-type')(api);
+require('.'+Api.version+'/inventory/component')(api);
+require('.'+Api.version+'/inventory/component-param')(api);
+require('.'+Api.version+'/inventory/distributor')(api);
+require('.'+Api.version+'/inventory/footprint')(api);
+require('.'+Api.version+'/inventory/location')(api);
+require('.'+Api.version+'/inventory/manufacturer')(api);
 require('.'+Api.version+'/inventory/prefix')(api);
 require('.'+Api.version+'/inventory/unit')(api);
-require('.'+Api.version+'/inventory/component')(api);
-require('.'+Api.version+'/inventory/category-param-type')(api);
-require('.'+Api.version+'/inventory/component-param')(api);
+
+require('.'+Api.version+'/note/note')(api);
+require('.'+Api.version+'/note/note-types')(api);
 
 require('.'+Api.version+'/user/account')(api);
 require('.'+Api.version+'/user/company')(api);
@@ -78,13 +85,11 @@ require('.'+Api.version+'/user/employee')(api);
 require('.'+Api.version+'/user/role')(api);
 
 require('.'+Api.version+'/activity')(api);
-
-require('.'+Api.version+'/status')(api);
 require('.'+Api.version+'/priority')(api);
+require('.'+Api.version+'/production')(api);
+require('.'+Api.version+'/project')(api);
+require('.'+Api.version+'/status')(api);
 require('.'+Api.version+'/type')(api);
-
-
-require('.'+Api.version+'/board/board')(api);
 
 api.get('*', function(req, res){
     res.redirect('/');
