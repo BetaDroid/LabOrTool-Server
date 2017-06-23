@@ -4,16 +4,17 @@
 
 const Api = require('../../configuration/api');
 const Priority = require('../models/priority');
+const Check = require('../models/authentication');
 
 module.exports = function(router) {
 
-    router.get(Api.version+'/priorities/', function (req, res) {
+    router.get(Api.version+'/priorities/', Check.isLoggedIn, function (req, res) {
         Priority.getAll(function(data) {
             res.json(data);
         });
     });
 
-    router.get(Api.version+'/priorities/:id', function (req, res) {
+    router.get(Api.version+'/priorities/:id', Check.isLoggedIn, function (req, res) {
         Priority.getById(req.params.id, function(data) {
             res.json(data);
         });

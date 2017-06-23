@@ -5,22 +5,23 @@
 const Api = require('../../../configuration/api');
 const Board = require('../../models/board/board');
 const Messages = require('../../messages/messages');
+const Check = require('../../models/authentication');
 
 module.exports = function(router) {
 
-    router.get(Api.version+'/boards/count/', function (req, res) {
+    router.get(Api.version+'/boards/count/', Check.isLoggedIn, function (req, res) {
         Board.count(function(data) {
             res.status(200).json(data);
         });
     });
 
-    router.get(Api.version+'/boards/', function (req, res) {
+    router.get(Api.version+'/boards/', Check.isLoggedIn, function (req, res) {
         Board.getAll(function(data) {
             res.status(200).json(data);
         });
     });
 
-    router.post(Api.version+'/boards/', function (req, res) {
+    router.post(Api.version+'/boards/', Check.isLoggedIn, function (req, res) {
 
         var board = req.body;
         if (board.Name === "" ||
@@ -33,13 +34,13 @@ module.exports = function(router) {
         }
     });
 
-    router.get(Api.version+'/boards/:id', function (req, res) {
+    router.get(Api.version+'/boards/:id', Check.isLoggedIn, function (req, res) {
         Board.getById(req.params.id, function(data) {
             res.status(200).json(data);
         });
     });
 
-    router.put(Api.version+'/boards/:id', function (req, res) {
+    router.put(Api.version+'/boards/:id', Check.isLoggedIn, function (req, res) {
 
         var board = req.body;
         var id = req.params.id;
@@ -55,7 +56,7 @@ module.exports = function(router) {
         }
     });
 
-    router.delete(Api.version+'/boards/:id', function (req, res) {
+    router.delete(Api.version+'/boards/:id', Check.isLoggedIn, function (req, res) {
 
         var id = req.params.id;
         if (id === "" &&
@@ -67,7 +68,7 @@ module.exports = function(router) {
         }
     });
 
-    router.get(Api.version+'/boards/search/:text', function (req, res) {
+    router.get(Api.version+'/boards/search/:text', Check.isLoggedIn, function (req, res) {
         Board.search(req.params.text, function(data) {
             res.status(200).json(data);
         });

@@ -40,6 +40,7 @@ exports.insert = function(_account) {
     bcrypt.hash(_account.Password, saltRounds, function(err, hash) {
         pass = hash;
     });
+
     db.connection.query("INSERT INTO `accounts` (`Username`, `Password`, `RoleId`, `Status`, `EmployeeId`, " +
         "`TelegramChatId`) VALUES (?,?,?,?,?,?);",
         [_account.Username, pass, _account.RoleId, _account.Status, _account.EmployeeId, _account.TelegramChatId],
@@ -95,7 +96,7 @@ exports.getByUsername = function(_username, callback) {
     db.connection.query("SELECT * FROM `accounts` WHERE `Username`=?;", [_username], function(err, rows) {
         if (err) throw err;
         else {
-            if (rows[0].Username === _username)
+            if (rows.length > 0 && rows[0].Username === _username)
                 return callback(rows[0]);
             else
                 return callback(null);

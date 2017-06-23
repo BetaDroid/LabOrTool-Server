@@ -6,6 +6,8 @@
 
 const LocalStrategy = require('passport-local').Strategy;
 const Account = require('../api/models/user/account');
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 module.exports = function(passport) {
     passport.serializeUser(function(user, done) {
@@ -28,12 +30,31 @@ module.exports = function(passport) {
                 if (user === null)
                     return done(null, false);
 
-                Account.validatePassword(password, user.Password, function (res) {
-                    if (!res)
+                if (password === null)
+                    return done(null, user);
+
+                return bcrypt.compare(password, user.Password, function(err, res) {
+
+                    // for test
+                    /*
+                    bcrypt.hash('password', saltRounds, function(err, hash) {
+                        console.log(hash);
+                    });*/
+
+                    // res == true
+                    if (res)
+                        return done(null, user);
+                    else
                         return done(null, false);
                 });
+                /*
+                Account.validatePassword(password, user.Password, function (res) {
+                    if (!res)
+                        return done(null, user);
+                        //return done(null, false);
+                });*/
 
-                return done(null, user);
+                //return done(null, user);
             });
         }
     ));

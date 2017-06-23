@@ -5,22 +5,23 @@
 const Api = require('../../../configuration/api');
 const BomElement = require('../../models/board/bom');
 const Messages = require('../../messages/messages');
+const Check = require('../../models/authentication');
 
 module.exports = function(router) {
 
-    router.get(Api.version+'/board/boms/bomelement/count/', function (req, res) {
+    router.get(Api.version+'/board/boms/bomelement/count/', Check.isLoggedIn, function (req, res) {
         BomElement.count(function(data) {
             res.status(200).json(data);
         });
     });
 
-    router.get(Api.version+'/board/boms/bomelement/', function (req, res) {
+    router.get(Api.version+'/board/boms/bomelement/', Check.isLoggedIn, function (req, res) {
         BomElement.getAll(function(data) {
             res.status(200).json(data);
         });
     });
 
-    router.post(Api.version+'/board/boms/bomelement/', function (req, res) {
+    router.post(Api.version+'/board/boms/bomelement/', Check.isLoggedIn, function (req, res) {
 
         var bomElement = req.body;
         if (!bomElement.ComponentId ||
@@ -35,13 +36,13 @@ module.exports = function(router) {
         }
     });
 
-    router.get(Api.version+'/board/boms/bomelement/:id', function (req, res) {
+    router.get(Api.version+'/board/boms/bomelement/:id', Check.isLoggedIn, function (req, res) {
         BomElement.getById(req.params.id, function(data) {
             res.status(200).json(data);
         });
     });
 
-    router.put(Api.version+'/board/boms/bomelement/:id', function (req, res) {
+    router.put(Api.version+'/board/boms/bomelement/:id', Check.isLoggedIn, function (req, res) {
 
         var bomElement = req.body;
         var id = req.params.id;
@@ -59,7 +60,7 @@ module.exports = function(router) {
         }
     });
 
-    router.delete(Api.version+'/board/boms/bomelement/:id', function (req, res) {
+    router.delete(Api.version+'/board/boms/bomelement/:id', Check.isLoggedIn, function (req, res) {
 
         var id = req.params.id;
         if (id === "" &&
@@ -71,7 +72,7 @@ module.exports = function(router) {
         }
     });
 
-    router.get(Api.version+'/board/boms/bomelement/search/:text', function (req, res) {
+    router.get(Api.version+'/board/boms/bomelement/search/:text', Check.isLoggedIn, function (req, res) {
         BomElement.search(req.params.text, function(data) {
             res.status(200).json(data);
         });

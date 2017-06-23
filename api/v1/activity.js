@@ -10,19 +10,19 @@ const Check = require('../models/authentication');
 
 module.exports = function(router) {
 
-    router.get(Api.version+'/activities/count/', function (req, res) {
+    router.get(Api.version+'/activities/count/', Check.isLoggedIn, function (req, res) {
         Activity.count(function(data) {
             res.json(data);
         });
     });
 
-    router.get(Api.version+'/activities/', function (req, res) {
+    router.get(Api.version+'/activities/', Check.isLoggedIn, function (req, res) {
         Activity.getAll(function(data) {
             res.json(data);
         });
     });
 
-    router.post(Api.version+'/activities/', function (req, res) {
+    router.post(Api.version+'/activities/', Check.isLoggedIn, function (req, res) {
         Activity.insert(req.body);
         Account.getAllChatId(function (data) {
             for (var i=0; i < data.length; i++) {
@@ -37,23 +37,23 @@ module.exports = function(router) {
         res.json({});
     });
 
-    router.get(Api.version+'/activities/:id', function (req, res) {
+    router.get(Api.version+'/activities/:id', Check.isLoggedIn, function (req, res) {
         Activity.getById(req.params.id, function(data) {
             res.json(data);
         });
     });
 
-    router.put(Api.version+'/activities/:id', function (req, res) {
+    router.put(Api.version+'/activities/:id', Check.isLoggedIn, function (req, res) {
         Activity.update(req.params.id, req.body);
         res.json({});
     });
 
-    router.delete(Api.version+'/activities/:id', function (req, res) {
+    router.delete(Api.version+'/activities/:id', Check.isLoggedIn, function (req, res) {
         Activity.delete(req.params.id);
         res.json({});
     });
 
-    router.get(Api.version+'/activities/search/:text', function (req, res) {
+    router.get(Api.version+'/activities/search/:text', Check.isLoggedIn, function (req, res) {
         Activity.search(req.params.text, function(data) {
             res.json(data);
         });

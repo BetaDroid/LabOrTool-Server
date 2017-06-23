@@ -5,22 +5,23 @@
 const Api = require('../../../configuration/api');
 const Category = require('../../models/inventory/category');
 const Messages = require('../../messages/messages');
+const Check = require('../../models/authentication');
 
 module.exports = function(router) {
 
-    router.get(Api.version+'/inventory/categories/count/', function (req, res) {
+    router.get(Api.version+'/inventory/categories/count/', Check.isLoggedIn, function (req, res) {
         Category.count(function(data) {
             res.status(200).json(data);
         });
     });
 
-    router.get(Api.version+'/inventory/categories/', function (req, res) {
+    router.get(Api.version+'/inventory/categories/', Check.isLoggedIn, function (req, res) {
         Category.getAll(function(data) {
             res.status(200).json(data);
         });
     });
 
-    router.post(Api.version+'/inventory/categories/', function (req, res) {
+    router.post(Api.version+'/inventory/categories/', Check.isLoggedIn, function (req, res) {
 
         var category = req.body;
         if (category.Name === "")
@@ -31,13 +32,13 @@ module.exports = function(router) {
         }
     });
 
-    router.get(Api.version+'/inventory/categories/:id', function (req, res) {
+    router.get(Api.version+'/inventory/categories/:id', Check.isLoggedIn, function (req, res) {
         Category.getById(req.params.id, function(data) {
             res.status(200).json(data);
         });
     });
 
-    router.put(Api.version+'/inventory/categories/:id', function (req, res) {
+    router.put(Api.version+'/inventory/categories/:id', Check.isLoggedIn, function (req, res) {
 
         var category = req.body;
         var id = req.params.id;
@@ -51,7 +52,7 @@ module.exports = function(router) {
         }
     });
 
-    router.delete(Api.version+'/inventory/categories/:id', function (req, res) {
+    router.delete(Api.version+'/inventory/categories/:id', Check.isLoggedIn, function (req, res) {
 
         var id = req.params.id;
         if (id === "" &&
@@ -63,7 +64,7 @@ module.exports = function(router) {
         }
     });
 
-    router.get(Api.version+'/inventory/categories/search/:text', function (req, res) {
+    router.get(Api.version+'/inventory/categories/search/:text', Check.isLoggedIn, function (req, res) {
         Category.search(req.params.text, function(data) {
             res.status(200).json(data);
         });

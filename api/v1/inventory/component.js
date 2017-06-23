@@ -5,22 +5,23 @@
 const Api = require('../../../configuration/api');
 const Component = require('../../models/inventory/component');
 const Messages = require('../../messages/messages');
+const Check = require('../../models/authentication');
 
 module.exports = function(router) {
 
-    router.get(Api.version+'/inventory/components/count/', function (req, res) {
+    router.get(Api.version+'/inventory/components/count/', Check.isLoggedIn, function (req, res) {
         Component.count(function(data) {
             res.status(200).json(data);
         });
     });
 
-    router.get(Api.version+'/inventory/components/', function (req, res) {
+    router.get(Api.version+'/inventory/components/', Check.isLoggedIn, function (req, res) {
         Component.getAll(function(data) {
             res.status(200).json(data);
         });
     });
 
-    router.post(Api.version+'/inventory/components/', function (req, res) {
+    router.post(Api.version+'/inventory/components/', Check.isLoggedIn, function (req, res) {
 
         var component = req.body;
         if (component.Name === "" ||
@@ -41,13 +42,13 @@ module.exports = function(router) {
         }
     });
 
-    router.get(Api.version+'/inventory/components/:id', function (req, res) {
+    router.get(Api.version+'/inventory/components/:id', Check.isLoggedIn, function (req, res) {
         Component.getById(req.params.id, function(data) {
             res.status(200).json(data);
         });
     });
 
-    router.put(Api.version+'/inventory/components/:id', function (req, res) {
+    router.put(Api.version+'/inventory/components/:id', Check.isLoggedIn, function (req, res) {
 
         var component = req.body;
         var id = req.params.id;
@@ -71,7 +72,7 @@ module.exports = function(router) {
         }
     });
 
-    router.delete(Api.version+'/inventory/components/:id', function (req, res) {
+    router.delete(Api.version+'/inventory/components/:id', Check.isLoggedIn, function (req, res) {
 
         var id = req.params.id;
         if (id === "" &&
@@ -83,7 +84,7 @@ module.exports = function(router) {
         }
     });
 
-    router.get(Api.version+'/inventory/components/search/:text', function (req, res) {
+    router.get(Api.version+'/inventory/components/search/:text', Check.isLoggedIn, function (req, res) {
         Component.search(req.params.text, function(data) {
             res.status(200).json(data);
         });

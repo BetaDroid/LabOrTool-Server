@@ -5,22 +5,23 @@
 const Api = require('../../../configuration/api');
 const CPT = require('../../models/inventory/category-param-type');
 const Messages = require('../../messages/messages');
+const Check = require('../../models/authentication');
 
 module.exports = function(router) {
 
-    router.get(Api.version+'/inventory/category-param-types/count/', function (req, res) {
+    router.get(Api.version+'/inventory/category-param-types/count/', Check.isLoggedIn, function (req, res) {
         CPT.count(function(data) {
             res.status(200).json(data);
         });
     });
 
-    router.get(Api.version+'/inventory/category-param-types/', function (req, res) {
+    router.get(Api.version+'/inventory/category-param-types/', Check.isLoggedIn, function (req, res) {
         CPT.getAll(function(data) {
             res.status(200).json(data);
         });
     });
 
-    router.post(Api.version+'/inventory/category-param-types/', function (req, res) {
+    router.post(Api.version+'/inventory/category-param-types/', Check.isLoggedIn, function (req, res) {
 
         var cpt = req.body;
         if (cpt.Name === "" ||
@@ -33,13 +34,13 @@ module.exports = function(router) {
         }
     });
 
-    router.get(Api.version+'/inventory/category-param-types/:id', function (req, res) {
+    router.get(Api.version+'/inventory/category-param-types/:id', Check.isLoggedIn, function (req, res) {
         CPT.getById(req.params.id, function(data) {
             res.status(200).json(data);
         });
     });
 
-    router.put(Api.version+'/inventory/category-param-types/:id', function (req, res) {
+    router.put(Api.version+'/inventory/category-param-types/:id', Check.isLoggedIn, function (req, res) {
 
         var cpt = req.body;
         var id = req.params.id;
@@ -55,7 +56,7 @@ module.exports = function(router) {
         }
     });
 
-    router.delete(Api.version+'/inventory/category-param-types/:id', function (req, res) {
+    router.delete(Api.version+'/inventory/category-param-types/:id', Check.isLoggedIn, function (req, res) {
 
         var id = req.params.id;
         if (id === "" &&
@@ -67,7 +68,7 @@ module.exports = function(router) {
         }
     });
 
-    router.get(Api.version+'/inventory/category-param-types/search/:text', function (req, res) {
+    router.get(Api.version+'/inventory/category-param-types/search/:text', Check.isLoggedIn, function (req, res) {
         CPT.search(req.params.text, function(data) {
             res.status(200).json(data);
         });
