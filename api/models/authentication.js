@@ -3,8 +3,11 @@
  */
 
 exports.isLoggedIn = function (req, res, next) {
-    if (req.isAuthenticated())
+    if (req.isAuthenticated()) {
         next();
-    else
+    }
+    else {
+        //next(); // for a easier debug
         res.status(401).json({ Message: 'please make the login!' });
+    }
 };

@@ -14,12 +14,15 @@ exports.count = function(callback) {
 exports.getAll = function(callback) {
     db.connection.query("SELECT * FROM `notetypes`;", function(err, rows) {
         if (err) throw err;
-        else callback(rows);
+        else {
+            // TODO: understand why rows is always empty and only here
+            callback(rows);
+        }
     });
 };
 
 exports.getById = function(_id, callback) {
-    db.connection.query("SELECT * FROM `notetypes` WHERE `Id`=?", [_id], function(err, rows) {
+    db.connection.query("SELECT * FROM `notetypes` WHERE `Id`=?;", [_id], function(err, rows) {
         if (err) throw err;
         else callback(rows[0]);
     });

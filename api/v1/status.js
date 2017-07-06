@@ -8,15 +8,21 @@ const Check = require('../models/authentication');
 
 module.exports = function(router) {
 
+    router.get(Api.version+'/statuses/count', Check.isLoggedIn, function (req, res) {
+        Status.count(function(data) {
+            res.status(200).json(data);
+        });
+    });
+
     router.get(Api.version+'/statuses/', Check.isLoggedIn, function (req, res) {
         Status.getAll(function(data) {
-            res.json(data);
+            res.status(200).json(data);
         });
     });
 
     router.get(Api.version+'/statuses/:id', Check.isLoggedIn, function (req, res) {
         Status.getById(req.params.id, function(data) {
-            res.json(data);
+            res.status(200).json(data);
         });
     });
 };

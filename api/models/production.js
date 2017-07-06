@@ -21,7 +21,7 @@ exports.getAll = function(callback) {
 exports.insert = function(_production) {
     db.connection.query("INSERT INTO `productions` (`ActivityId`, `Description`, `BoardId`, `Quantity`, " +
         "`WorkCode`, `OutputCode`, `Deadline`, `StatusId`, `EmployeeId`, `ManufacturerId`) " +
-        "VALUES (?,?,?,?,?,?,?,?,?,?,?,?);",
+        "VALUES (?,?,?,?,?,?,?,?,?,?);",
         [_production.ActivityId, _production.Description, _production.BoardId, _production.Quantity,
             _production.WorkCode, _production.OutputCode, _production.Deadline, _production.StatusId,
             _production.EmployeeId, _production.ManufacturerId],

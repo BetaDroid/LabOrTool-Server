@@ -77,7 +77,7 @@ require('.'+Api.version+'/inventory/prefix')(api);
 require('.'+Api.version+'/inventory/unit')(api);
 
 require('.'+Api.version+'/note/note')(api);
-require('.'+Api.version+'/note/note-types')(api);
+require('.'+Api.version+'/note/note-type')(api);
 
 require('.'+Api.version+'/user/account')(api);
 require('.'+Api.version+'/user/company')(api);
